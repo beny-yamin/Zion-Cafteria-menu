@@ -33,7 +33,7 @@ const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 // Configure Socket.io
 const io = new SocketIOServer(server, {
   cors: {
-    origin: [clientOrigin, 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000'],
+    origin: [clientOrigin, 'http://localhost:5176', 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
   },
@@ -46,7 +46,7 @@ app.set('io', io);
 app.use(helmet());
 app.use(
   cors({
-    origin: [clientOrigin, 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000'],
+    origin: [clientOrigin, 'http://localhost:5176', 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000'],
     credentials: true,
   })
 );
