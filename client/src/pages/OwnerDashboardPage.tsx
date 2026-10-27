@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { DollarSign, ShoppingBag, Clock, Plus, LogOut, LayoutDashboard, QrCode, Users } from 'lucide-react';
+import { DollarSign, ShoppingBag, Clock, Plus, LogOut, LayoutDashboard, QrCode, Users, ChefHat, Utensils, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { AnalyticsData, Table } from '../types/index.js';
@@ -36,31 +36,43 @@ export const OwnerDashboardPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-gray-200 px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center space-x-6">
           <h1 className="font-black text-xl text-gray-900 tracking-tight">Owner Central</h1>
-          <nav className="flex space-x-2">
-            <button onClick={() => setActiveTab('analytics')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 ${activeTab === 'analytics' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+          <nav className="flex space-x-1.5">
+            <button onClick={() => setActiveTab('analytics')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'analytics' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
               <LayoutDashboard className="w-3.5 h-3.5" />
               <span>Analytics</span>
             </button>
-            <button onClick={() => setActiveTab('tables')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 ${activeTab === 'tables' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <button onClick={() => setActiveTab('tables')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'tables' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
               <QrCode className="w-3.5 h-3.5" />
               <span>Tables & QR</span>
             </button>
-            <button onClick={() => setActiveTab('staff')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 ${activeTab === 'staff' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <button onClick={() => setActiveTab('staff')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'staff' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
               <Users className="w-3.5 h-3.5" />
               <span>Staff Management</span>
             </button>
           </nav>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <button onClick={() => setIsMenuModalOpen(true)} className="touch-target px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl flex items-center space-x-1 shadow-sm">
+        <div className="flex items-center space-x-2">
+          <button onClick={() => navigate('/kitchen')} className="touch-target px-2.5 py-1.5 bg-orange-50 hover:bg-orange-100 text-orange-800 text-xs font-semibold rounded-xl flex items-center space-x-1 border border-orange-200" title="View Kitchen Display">
+            <ChefHat className="w-3.5 h-3.5" />
+            <span>Kitchen</span>
+          </button>
+          <button onClick={() => navigate('/staff')} className="touch-target px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-semibold rounded-xl flex items-center space-x-1 border border-blue-200" title="View Floor Staff Console">
+            <Utensils className="w-3.5 h-3.5" />
+            <span>Staff</span>
+          </button>
+          <button onClick={() => navigate('/menu?table=1')} className="touch-target px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-xl flex items-center space-x-1 border border-emerald-200" title="View Customer Menu">
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Customer Menu</span>
+          </button>
+          <button onClick={() => setIsMenuModalOpen(true)} className="touch-target px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl flex items-center space-x-1 shadow-sm">
             <Plus className="w-4 h-4" />
             <span>New Item</span>
           </button>
-          <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="touch-target w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:text-red-600 flex items-center justify-center">
+          <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="touch-target w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-red-600 flex items-center justify-center">
             <LogOut className="w-4 h-4" />
           </button>
         </div>

@@ -85,8 +85,13 @@ export const StaffLoginPage: React.FC = () => {
               </button>
             ))}
           </div>
-          <button type="button" onClick={() => navigate('/menu?table=1')} className="w-full mt-3 text-center text-xs text-amber-700 font-semibold hover:underline">
-            Or continue as frictionless table guest &rarr;
+          <button
+            type="button"
+            onClick={() => navigate('/menu?table=1')}
+            className="w-full mt-4 touch-target py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow-sm transition-colors"
+          >
+            <span>Browse Menu as Customer (No Login Required)</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { ChefHat, Package, LogOut } from 'lucide-react';
+import { ChefHat, Package, LogOut, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { Order, OrderStatus, MenuItem } from '../types/index.js';
 import { useOrderSocket } from '../hooks/useOrderSocket.js';
+import { useAuth } from '../context/AuthContext.js';
 import { OrderTicketCard } from '../components/cards/OrderTicketCard.js';
 import { StockToggleDrawer } from '../components/kitchen/StockToggleDrawer.js';
 
 export const KitchenDisplayPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [isStockDrawerOpen, setIsStockDrawerOpen] = useState(false);
@@ -83,7 +85,16 @@ export const KitchenDisplayPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2">
+          {user?.role === 'Owner' && (
+            <button
+              onClick={() => navigate('/owner')}
+              className="touch-target px-3 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold rounded-xl flex items-center space-x-1.5 border border-amber-500/40"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Owner Central</span>
+            </button>
+          )}
           <button
             onClick={() => setIsStockDrawerOpen(true)}
             className="touch-target px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl flex items-center space-x-1.5 border border-slate-700"

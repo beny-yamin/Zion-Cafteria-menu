@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, RotateCcw, Utensils, LogOut, CheckCircle2 } from 'lucide-react';
+import { Users, RotateCcw, Utensils, LogOut, ArrowLeft, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { Table } from '../types/index.js';
@@ -44,13 +44,32 @@ export const StaffDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <button
-          onClick={logout}
-          className="touch-target w-10 h-10 rounded-xl border border-gray-200 text-gray-500 hover:text-red-600 flex items-center justify-center"
-          title="Sign Out"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
+        <div className="flex items-center space-x-2">
+          {user?.role === 'Owner' && (
+            <button
+              onClick={() => navigate('/owner')}
+              className="touch-target px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold rounded-xl flex items-center space-x-1 border border-amber-200"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Owner Central</span>
+            </button>
+          )}
+          <button
+            onClick={() => navigate('/menu?table=1')}
+            className="touch-target px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-xl flex items-center space-x-1 border border-emerald-200"
+            title="Open Customer Menu"
+          >
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Customer Menu</span>
+          </button>
+          <button
+            onClick={logout}
+            className="touch-target w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-red-600 flex items-center justify-center"
+            title="Sign Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
       </header>
 
       <main className="max-w-5xl w-full mx-auto p-6 space-y-6 flex-1">

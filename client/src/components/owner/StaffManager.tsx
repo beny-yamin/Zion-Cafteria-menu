@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Shield, KeyRound, Trash2 } from 'lucide-react';
+import { UserPlus, KeyRound, Trash2, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api.js';
 import { AdminUser, UserRole } from '../../types/index.js';
 import { CreateStaffModal } from './CreateStaffModal.js';
@@ -11,6 +12,7 @@ const ROLE_COLORS: Record<UserRole, string> = {
 };
 
 export const StaffManager: React.FC = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,105 +27,110 @@ export const StaffManager: React.FC = () => {
   }, []);
 
   const handleRoleChange = async (userId: string, newRole: UserRole) => {
-    try {
-      await api.patch(`/auth/users/${userId}/role`, { role: newRole });
-      fetchUsers();
-    } catch (err) {
-      console.error('Role update failed:', err);
-    }
+    await api.patch(`/auth/users/${userId}/role`, { role: newRole });
+    fetchUsers();
   };
 
   const handleResetPassword = async (userId: string) => {
     const newPass = window.prompt('Enter new password (min 6 characters):');
     if (!newPass || newPass.length < 6) return;
-    try {
-      await api.patch(`/auth/users/${userId}/password`, { newPassword: newPass });
-      alert('Password updated successfully.');
-    } catch (err) {
-      console.error('Password reset failed:', err);
-    }
+    await api.patch(`/auth/users/${userId}/password`, { newPassword: newPass });
+    alert('Password updated.');
   };
 
   const handleDelete = async (userId: string) => {
-    if (!window.confirm('Are you sure you want to delete this staff account?')) return;
-    try {
-      await api.delete(`/auth/users/${userId}`);
-      fetchUsers();
-    } catch (err) {
-      console.error('User deletion failed:', err);
-    }
+    if (!window.confirm('Delete this account?')) return;
+    await api.delete(`/auth/users/${userId}`);
+    fetchUsers();
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center justify-between">
         <div>
-          <h3 className="font-bold text-gray-900 text-sm">Team & Role-Based Access</h3>
-          <p className="text-xs text-gray-500">Create team accounts and grant dashboard permissions</p>
+          <h3 className="font-bold text-gray-900 text-sm">Team Accounts (Kitchen & Staff)</h3>
+          <p className="text-xs text-gray-500">Create and oversee team member accounts</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="touch-target px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl flex items-center space-x-1.5 transition-colors shadow-sm"
+          className="touch-target px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl flex items-center space-x-1 shadow-sm"
         >
-          <UserPlus className="w-4 h-4" />
-          <span>New Account</span>
+          <UserPlus className="w-3.5 h-3.5" />
+          <span>Add Staff / Kitchen</span>
         </button>
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-gray-50 border-b border-gray-100 text-gray-500 uppercase tracking-wider font-semibold">
-              <tr>
-                <th className="px-5 py-3">User</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Role</th>
-                <th className="px-5 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {users.map((u) => {
-                const id = u.id || u._id || '';
-                return (
-                  <tr key={id} className="hover:bg-gray-50/50">
-                    <td className="px-5 py-3.5 font-bold text-gray-900">{u.name}</td>
-                    <td className="px-4 py-3.5 text-gray-600 font-mono">{u.email}</td>
-                    <td className="px-4 py-3.5">
-                      <select
-                        value={u.role}
-                        onChange={(e) => handleRoleChange(id, e.target.value as UserRole)}
-                        className={`px-2 py-1 rounded-lg border font-bold text-[11px] ${ROLE_COLORS[u.role]}`}
-                      >
-                        <option value="Owner">Owner</option>
-                        <option value="KitchenStaff">KitchenStaff</option>
-                        <option value="Staff">Staff</option>
-                      </select>
-                    </td>
-                    <td className="px-5 py-3.5 text-right space-x-2">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-gray-50 border-b border-gray-100 text-gray-500 uppercase tracking-wider font-semibold">
+            <tr>
+              <th className="px-4 py-3">User</th>
+              <th className="px-4 py-3">Email</th>
+              <th className="px-3 py-3">Role</th>
+              <th className="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {users.map((u) => {
+              const id = u.id || u._id || '';
+              return (
+                <tr key={id} className="hover:bg-gray-50/50">
+                  <td className="px-4 py-3 font-bold text-gray-900">{u.name}</td>
+                  <td className="px-4 py-3 text-gray-600 font-mono text-[11px]">{u.email}</td>
+                  <td className="px-3 py-3">
+                    <select
+                      value={u.role}
+                      onChange={(e) => handleRoleChange(id, e.target.value as UserRole)}
+                      className={`px-2 py-0.5 rounded-lg border font-bold text-[11px] ${ROLE_COLORS[u.role]}`}
+                    >
+                      <option value="Owner">Owner</option>
+                      <option value="KitchenStaff">KitchenStaff</option>
+                      <option value="Staff">Staff</option>
+                    </select>
+                  </td>
+                  <td className="px-4 py-3 text-right space-x-1">
+                    {u.role === 'KitchenStaff' && (
                       <button
-                        onClick={() => handleResetPassword(id)}
-                        className="touch-target px-2.5 py-1 text-gray-500 hover:text-amber-700 hover:bg-amber-50 rounded-lg inline-flex items-center space-x-1"
-                        title="Reset Password"
+                        onClick={() => navigate('/kitchen')}
+                        className="touch-target px-2 py-1 text-orange-700 hover:bg-orange-50 rounded-lg inline-flex items-center space-x-1"
+                        title="Open Kitchen Display"
                       >
-                        <KeyRound className="w-3.5 h-3.5" />
-                        <span>Reset</span>
+                        <ExternalLink className="w-3 h-3" />
+                        <span>KDS</span>
                       </button>
-                      {u.email !== 'owner@cafe.com' && (
-                        <button
-                          onClick={() => handleDelete(id)}
-                          className="touch-target p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg inline-flex items-center"
-                          title="Remove user"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                    )}
+                    {u.role === 'Staff' && (
+                      <button
+                        onClick={() => navigate('/staff')}
+                        className="touch-target px-2 py-1 text-blue-700 hover:bg-blue-50 rounded-lg inline-flex items-center space-x-1"
+                        title="Open Staff Console"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        <span>Console</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleResetPassword(id)}
+                      className="touch-target p-1 text-gray-400 hover:text-amber-600 rounded-lg inline-flex items-center"
+                      title="Reset Password"
+                    >
+                      <KeyRound className="w-3.5 h-3.5" />
+                    </button>
+                    {u.email !== 'owner@cafe.com' && (
+                      <button
+                        onClick={() => handleDelete(id)}
+                        className="touch-target p-1 text-gray-400 hover:text-red-600 rounded-lg inline-flex items-center"
+                        title="Remove user"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
 
       <CreateStaffModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onStaffCreated={fetchUsers} />
