@@ -5,6 +5,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
 import { Server as SocketIOServer } from 'socket.io';
 import QRCode from 'qrcode';
 
@@ -22,6 +23,7 @@ import analyticsRoutes from './routes/analyticsRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { MenuItem } from './models/MenuItem.js';
 import { Table } from './models/Table.js';
+import { AdminUser } from './models/AdminUser.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -85,6 +87,7 @@ io.on('connection', (socket) => {
 // Automatic Seeder for First-Time Setup
 const seedInitialData = async () => {
   try {
+    // 1. Seed Menu Catalog
     const menuCount = await MenuItem.countDocuments();
     if (menuCount === 0) {
       console.log('Seeding initial cafe menu catalog...');
@@ -153,6 +156,7 @@ const seedInitialData = async () => {
       console.log('Seeded 6 starter menu items.');
     }
 
+    // 2. Seed Tables
     const tableCount = await Table.countDocuments();
     if (tableCount === 0) {
       console.log('Generating initial QR codes for Tables 1 through 8...');
@@ -171,6 +175,29 @@ const seedInitialData = async () => {
         });
       }
       console.log('Seeded 8 physical tables with QR codes.');
+    }
+
+    // 3. Seed Default Accounts for All 4 Roles
+    const seedAccounts = [
+      { name: 'Master Owner', email: 'owner@cafe.com', pass: 'owner1234', role: 'Owner' as const },
+      { name: 'Kitchen Head', email: 'kitchen@cafe.com', pass: 'kitchen1234', role: 'KitchenStaff' as const },
+      { name: 'Floor Staff', email: 'staff@cafe.com', pass: 'staff1234', role: 'Staff' as const },
+      { name: 'Loyal Customer', email: 'customer@cafe.com', pass: 'customer1234', role: 'Customer' as const },
+    ];
+
+    for (const acc of seedAccounts) {
+      const passwordHash = await bcrypt.hash(acc.pass, 10);
+      await AdminUser.findOneAndUpdate(
+        { email: acc.email },
+        {
+          name: acc.name,
+          email: acc.email,
+          passwordHash,
+          role: acc.role,
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      console.log(`Configured default ${acc.role} account: ${acc.email} / ${acc.pass}`);
     }
   } catch (err) {
     console.error('Error in initial data seeder:', err);

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
+import { AdminUser, UserRole } from '../models/AdminUser.js';
 
 // Initialize Firebase Admin if project ID is provided and not already initialized
 if (getApps().length === 0 && process.env.FIREBASE_PROJECT_ID) {
@@ -27,7 +28,8 @@ if (getApps().length === 0 && process.env.FIREBASE_PROJECT_ID) {
 export interface AuthenticatedUser {
   id: string;
   email?: string;
-  role?: 'Owner' | 'KitchenStaff' | string;
+  name?: string;
+  role?: UserRole | string;
 }
 
 export interface AuthRequest extends Request {
@@ -55,10 +57,27 @@ export const requireAuth = async (
   if (getApps().length > 0) {
     try {
       const decodedToken = await getAuth().verifyIdToken(token);
+      let role: UserRole = 'Customer';
+
+      // Look up user in MongoDB to retrieve role assignment
+      const dbUser = await AdminUser.findOne({
+        $or: [
+          { firebaseUid: decodedToken.uid },
+          { email: decodedToken.email?.toLowerCase() },
+        ],
+      });
+
+      if (dbUser) {
+        role = dbUser.role;
+      } else if (decodedToken.role) {
+        role = decodedToken.role as UserRole;
+      }
+
       req.user = {
         id: decodedToken.uid,
         email: decodedToken.email,
-        role: (decodedToken.role as string) || 'KitchenStaff',
+        name: decodedToken.name || dbUser?.name || 'User',
+        role,
       };
       next();
       return;
@@ -81,14 +100,14 @@ export const requireAuth = async (
   }
 };
 
-export const requireRole = (allowedRoles: Array<'Owner' | 'KitchenStaff'>) => {
+export const requireRole = (allowedRoles: Array<UserRole>) => {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({ success: false, message: 'Unauthenticated.' });
       return;
     }
 
-    if (!req.user.role || !allowedRoles.includes(req.user.role as 'Owner' | 'KitchenStaff')) {
+    if (!req.user.role || !allowedRoles.includes(req.user.role as UserRole)) {
       res.status(403).json({
         success: false,
         message: 'Forbidden. You do not have permission to access this resource.',

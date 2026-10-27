@@ -57,11 +57,16 @@ export interface CartItem {
   specialInstructions: string;
 }
 
+export type UserRole = 'Owner' | 'KitchenStaff' | 'Staff' | 'Customer';
+
 export interface AdminUser {
   id: string;
+  _id?: string;
   name: string;
   email: string;
-  role: 'Owner' | 'KitchenStaff';
+  role: UserRole;
+  firebaseUid?: string;
+  createdAt?: string;
 }
 
 export interface AnalyticsData {
