@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/* Base styles and mobile ergonomics */
+html, body {
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Ensure interactive targets have minimum 44px touch area */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}

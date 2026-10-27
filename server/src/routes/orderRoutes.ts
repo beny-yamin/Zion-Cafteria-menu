@@ -10,13 +10,15 @@ import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = Router();
 
-// Public: frictionless customer ordering & tracking
-router.post('/', createOrder);
+// 1. Specific static sub-paths first
+router.get('/active', requireAuth, requireRole(['Owner', 'KitchenStaff']), getActiveOrders);
 router.get('/table/:tableNumber', getOrdersByTable);
+
+// 2. Generic parameterized sub-path after
 router.get('/:id', getOrderById);
 
-// Protected: Kitchen staff and owner order management
-router.get('/active', requireAuth, requireRole(['Owner', 'KitchenStaff']), getActiveOrders);
+// 3. Mutation endpoints
+router.post('/', createOrder);
 router.patch('/:id/status', requireAuth, requireRole(['Owner', 'KitchenStaff']), updateOrderStatus);
 
 export default router;
