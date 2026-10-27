@@ -177,13 +177,15 @@ const seedInitialData = async () => {
       console.log('Seeded 8 physical tables with QR codes.');
     }
 
-    // 3. Seed Default Accounts for All 4 Roles
+    // 3. Seed Default Staff Accounts (Customers require zero authentication)
     const seedAccounts = [
       { name: 'Master Owner', email: 'owner@cafe.com', pass: 'owner1234', role: 'Owner' as const },
       { name: 'Kitchen Head', email: 'kitchen@cafe.com', pass: 'kitchen1234', role: 'KitchenStaff' as const },
       { name: 'Floor Staff', email: 'staff@cafe.com', pass: 'staff1234', role: 'Staff' as const },
-      { name: 'Loyal Customer', email: 'customer@cafe.com', pass: 'customer1234', role: 'Customer' as const },
     ];
+
+    // Clean up any previously seeded customer accounts
+    await AdminUser.deleteMany({ email: 'customer@cafe.com' });
 
     for (const acc of seedAccounts) {
       const passwordHash = await bcrypt.hash(acc.pass, 10);

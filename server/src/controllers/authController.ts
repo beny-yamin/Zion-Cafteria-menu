@@ -89,7 +89,7 @@ export const firebaseSync = async (req: Request, res: Response): Promise<void> =
         name: name || verifiedEmail.split('@')[0],
         email: verifiedEmail,
         passwordHash: defaultHash,
-        role: (role as UserRole) || 'Customer',
+        role: (role as UserRole) || 'Staff',
       });
     } else if (verifiedUid && !user.firebaseUid) {
       user.firebaseUid = verifiedUid;
@@ -195,7 +195,7 @@ export const updateUserRole = async (req: AuthRequest, res: Response): Promise<v
     const { id } = req.params;
     const { role } = req.body;
 
-    const validRoles: UserRole[] = ['Owner', 'KitchenStaff', 'Staff', 'Customer'];
+    const validRoles: UserRole[] = ['Owner', 'KitchenStaff', 'Staff'];
     if (!validRoles.includes(role)) {
       res.status(400).json({ success: false, message: 'Invalid role specified.' });
       return;

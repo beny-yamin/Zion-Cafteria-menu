@@ -57,7 +57,7 @@ export interface CartItem {
   specialInstructions: string;
 }
 
-export type UserRole = 'Owner' | 'KitchenStaff' | 'Staff' | 'Customer';
+export type UserRole = 'Owner' | 'KitchenStaff' | 'Staff';
 
 export interface AdminUser {
   id: string;

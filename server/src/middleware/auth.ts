@@ -57,7 +57,7 @@ export const requireAuth = async (
   if (getApps().length > 0) {
     try {
       const decodedToken = await getAuth().verifyIdToken(token);
-      let role: UserRole = 'Customer';
+      let role: UserRole = 'Staff';
 
       // Look up user in MongoDB to retrieve role assignment
       const dbUser = await AdminUser.findOne({

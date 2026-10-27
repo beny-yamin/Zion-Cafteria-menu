@@ -80,7 +80,6 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ isOpen, onCl
             <select value={role} onChange={(e) => setRole(e.target.value as UserRole)} className="w-full px-3 py-2 border border-gray-200 rounded-xl bg-white font-medium">
               <option value="KitchenStaff">Kitchen Staff (KDS Screen & Stock)</option>
               <option value="Staff">Floor Staff (Table Overview & Assisted Orders)</option>
-              <option value="Customer">Customer Account</option>
               <option value="Owner">Co-Owner (Full Admin Access)</option>
             </select>
           </div>

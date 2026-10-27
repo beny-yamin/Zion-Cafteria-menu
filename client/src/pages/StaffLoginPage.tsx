@@ -7,7 +7,6 @@ const DEMO_USERS = [
   { label: 'Owner', email: 'owner@cafe.com', pass: 'owner1234', color: 'bg-purple-100 text-purple-900 border-purple-200' },
   { label: 'Kitchen', email: 'kitchen@cafe.com', pass: 'kitchen1234', color: 'bg-orange-100 text-orange-900 border-orange-200' },
   { label: 'Floor Staff', email: 'staff@cafe.com', pass: 'staff1234', color: 'bg-blue-100 text-blue-900 border-blue-200' },
-  { label: 'Customer', email: 'customer@cafe.com', pass: 'customer1234', color: 'bg-emerald-100 text-emerald-900 border-emerald-200' },
 ];
 
 export const StaffLoginPage: React.FC = () => {
@@ -26,8 +25,7 @@ export const StaffLoginPage: React.FC = () => {
       const res = await login(email, password);
       if (res.role === 'Owner') navigate('/owner');
       else if (res.role === 'KitchenStaff') navigate('/kitchen');
-      else if (res.role === 'Staff') navigate('/staff');
-      else navigate('/menu?table=1');
+      else navigate('/staff');
     } catch (err: unknown) {
       setErrorMsg((err as Error).message || 'Authentication failed. Please verify credentials.');
     } finally {
@@ -80,7 +78,7 @@ export const StaffLoginPage: React.FC = () => {
             <UserCheck className="w-3.5 h-3.5 mr-1 text-amber-600" />
             <span>Click to fill test credentials:</span>
           </p>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-3 gap-1.5">
             {DEMO_USERS.map((demo) => (
               <button key={demo.label} type="button" onClick={() => fillDemo(demo.email, demo.pass)} className={`touch-target py-1.5 px-2 rounded-xl text-[11px] font-bold border transition-colors ${demo.color}`}>
                 {demo.label}

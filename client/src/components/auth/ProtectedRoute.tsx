@@ -32,9 +32,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
     if (role === 'Staff') {
       return <Navigate to="/staff" replace />;
     }
-    if (role === 'Customer') {
-      return <Navigate to="/menu?table=1" replace />;
-    }
     return <Navigate to="/login" replace />;
   }
 

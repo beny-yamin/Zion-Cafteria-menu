@@ -1,14 +1,13 @@
 const API_URL = 'http://localhost:5000/api';
 
 async function runRBACTest() {
-  console.log('=== Starting Firebase & 4-Role RBAC Integration Verification ===\n');
+  console.log('=== Starting Firebase & Staff RBAC Integration Verification ===\n');
 
-  // 1. Test All 4 Pre-Configured Seed Accounts
+  // 1. Test Pre-Configured Staff Seed Accounts (Customers require zero authentication)
   const seedCredentials = [
     { role: 'Owner', email: 'owner@cafe.com', pass: 'owner1234' },
     { role: 'KitchenStaff', email: 'kitchen@cafe.com', pass: 'kitchen1234' },
     { role: 'Staff', email: 'staff@cafe.com', pass: 'staff1234' },
-    { role: 'Customer', email: 'customer@cafe.com', pass: 'customer1234' },
   ];
 
   const tokens: Record<string, string> = {};
