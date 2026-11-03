@@ -5,7 +5,7 @@ interface KpiCardProps {
   value: string | number;
   subtitle?: string;
   icon: React.ElementType;
-  colorClass: string;
+  colorClass?: string;
 }
 
 export const KpiCard: React.FC<KpiCardProps> = ({
@@ -13,16 +13,15 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   value,
   subtitle,
   icon: Icon,
-  colorClass,
 }) => {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm flex items-center justify-between">
+    <div className="bg-cafe-card rounded-2xl border border-cafe-border p-5 shadow-sm flex items-center justify-between transition-colors">
       <div>
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{title}</p>
-        <h3 className="text-2xl font-black text-gray-900 mt-1">{value}</h3>
-        {subtitle && <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>}
+        <p className="text-xs font-bold text-cafe-muted uppercase tracking-wider">{title}</p>
+        <h3 className="text-2xl font-black text-cafe-text mt-1">{value}</h3>
+        {subtitle && <p className="text-[11px] text-cafe-muted mt-0.5">{subtitle}</p>}
       </div>
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClass}`}>
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-cafe-cream text-cafe-amber border border-cafe-border">
         <Icon className="w-6 h-6" />
       </div>
     </div>

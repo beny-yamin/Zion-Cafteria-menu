@@ -24,7 +24,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear invalid token if request was rejected
       const isAuthRoute = error.config?.url?.includes('/auth/login');
       if (!isAuthRoute) {
         localStorage.removeItem('token');

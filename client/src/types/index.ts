@@ -66,6 +66,8 @@ export interface AdminUser {
   email: string;
   role: UserRole;
   firebaseUid?: string;
+  isDemo?: boolean;
+  isProtected?: boolean;
   createdAt?: string;
 }
 

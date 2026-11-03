@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import {
   login,
+  register,
+  demoLogin,
   firebaseSync,
   getCurrentUser,
   getAllUsers,
@@ -13,8 +15,10 @@ import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = Router();
 
-// Public: Staff & customer login & Firebase token sync
+// Public: Shared authentication & Portfolio demo access
 router.post('/login', login);
+router.post('/register', register);
+router.post('/demo-login', demoLogin);
 router.post('/firebase-sync', firebaseSync);
 
 // Protected: Current user profile

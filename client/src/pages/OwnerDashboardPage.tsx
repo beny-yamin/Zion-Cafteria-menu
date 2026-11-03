@@ -8,6 +8,7 @@ import { SalesChart } from '../components/analytics/SalesChart.js';
 import { TableQrManager } from '../components/tables/TableQrManager.js';
 import { StaffManager } from '../components/owner/StaffManager.js';
 import { MenuManagerModal } from '../components/forms/MenuManagerModal.js';
+import { ThemeSwitcher } from '../components/layout/ThemeSwitcher.js';
 
 export const OwnerDashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,20 +36,20 @@ export const OwnerDashboardPage: React.FC = () => {
   }, [fetchAnalytics, fetchTables]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-white border-b border-gray-200 px-6 py-3.5 flex items-center justify-between">
+    <div className="min-h-screen bg-cafe-cream text-cafe-text flex flex-col transition-colors">
+      <header className="bg-cafe-card border-b border-cafe-border px-6 py-3.5 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-6">
-          <h1 className="font-black text-xl text-gray-900 tracking-tight">Owner Central</h1>
+          <h1 className="font-black text-xl text-cafe-text tracking-tight">Zion Owner Central</h1>
           <nav className="flex space-x-1.5">
-            <button onClick={() => setActiveTab('analytics')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'analytics' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <button onClick={() => setActiveTab('analytics')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'analytics' ? 'bg-cafe-amber text-white shadow-sm' : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'}`}>
               <LayoutDashboard className="w-3.5 h-3.5" />
               <span>Analytics</span>
             </button>
-            <button onClick={() => setActiveTab('tables')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'tables' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <button onClick={() => setActiveTab('tables')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'tables' ? 'bg-cafe-amber text-white shadow-sm' : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'}`}>
               <QrCode className="w-3.5 h-3.5" />
               <span>Tables & QR</span>
             </button>
-            <button onClick={() => setActiveTab('staff')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'staff' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <button onClick={() => setActiveTab('staff')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'staff' ? 'bg-cafe-amber text-white shadow-sm' : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'}`}>
               <Users className="w-3.5 h-3.5" />
               <span>Staff Management</span>
             </button>
@@ -56,23 +57,24 @@ export const OwnerDashboardPage: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-2">
-          <button onClick={() => navigate('/kitchen')} className="touch-target px-2.5 py-1.5 bg-orange-50 hover:bg-orange-100 text-orange-800 text-xs font-semibold rounded-xl flex items-center space-x-1 border border-orange-200" title="View Kitchen Display">
-            <ChefHat className="w-3.5 h-3.5" />
+          <ThemeSwitcher />
+          <button onClick={() => navigate('/kitchen')} className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border" title="View Kitchen Display">
+            <ChefHat className="w-3.5 h-3.5 text-cafe-amber" />
             <span>Kitchen</span>
           </button>
-          <button onClick={() => navigate('/staff')} className="touch-target px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-semibold rounded-xl flex items-center space-x-1 border border-blue-200" title="View Floor Staff Console">
-            <Utensils className="w-3.5 h-3.5" />
+          <button onClick={() => navigate('/staff')} className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border" title="View Floor Staff Console">
+            <Utensils className="w-3.5 h-3.5 text-cafe-deep" />
             <span>Staff</span>
           </button>
-          <button onClick={() => navigate('/menu?table=1')} className="touch-target px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-xl flex items-center space-x-1 border border-emerald-200" title="View Customer Menu">
-            <Smartphone className="w-3.5 h-3.5" />
-            <span>Customer Menu</span>
+          <button onClick={() => navigate('/menu?table=1')} className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border" title="View Customer Menu">
+            <Smartphone className="w-3.5 h-3.5 text-cafe-amber" />
+            <span>Menu</span>
           </button>
-          <button onClick={() => setIsMenuModalOpen(true)} className="touch-target px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl flex items-center space-x-1 shadow-sm">
+          <button onClick={() => setIsMenuModalOpen(true)} className="touch-target px-3 py-1.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white text-xs font-bold rounded-xl flex items-center space-x-1 shadow-sm">
             <Plus className="w-4 h-4" />
             <span>New Item</span>
           </button>
-          <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="touch-target w-9 h-9 rounded-xl border border-gray-200 text-gray-500 hover:text-red-600 flex items-center justify-center">
+          <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="touch-target w-9 h-9 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:border-[#4B3024] flex items-center justify-center transition-colors" title="Log Out">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -82,20 +84,20 @@ export const OwnerDashboardPage: React.FC = () => {
         {activeTab === 'analytics' && (
           <>
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900 text-base">Key Performance Indicators</h2>
-              <div className="flex bg-gray-200/80 p-1 rounded-xl">
+              <h2 className="font-bold text-cafe-text text-base">Key Performance Indicators</h2>
+              <div className="flex bg-cafe-border/50 p-1 rounded-xl">
                 {(['today', 'week', 'month'] as const).map((r) => (
-                  <button key={r} onClick={() => setRange(r)} className={`touch-target px-3 py-1 rounded-lg text-xs font-bold capitalize transition-all ${range === r ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'}`}>{r}</button>
+                  <button key={r} onClick={() => setRange(r)} className={`touch-target px-3 py-1 rounded-lg text-xs font-bold capitalize transition-all ${range === r ? 'bg-cafe-card text-cafe-text shadow-sm' : 'text-cafe-muted'}`}>{r}</button>
                 ))}
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <KpiCard title="Total Revenue" value={`$${(analytics?.totalRevenue || 0).toFixed(2)}`} icon={DollarSign} colorClass="bg-green-50 text-green-700" />
-              <KpiCard title="Orders Served" value={analytics?.orderCount || 0} icon={ShoppingBag} colorClass="bg-blue-50 text-blue-700" />
-              <KpiCard title="Average Kitchen Speed" value={`${analytics?.avgPrepTimeMinutes || 0} min`} icon={Clock} colorClass="bg-orange-50 text-orange-700" />
+              <KpiCard title="Total Revenue" value={`$${(analytics?.totalRevenue || 0).toFixed(2)}`} icon={DollarSign} />
+              <KpiCard title="Orders Served" value={analytics?.orderCount || 0} icon={ShoppingBag} />
+              <KpiCard title="Average Kitchen Speed" value={`${analytics?.avgPrepTimeMinutes || 0} min`} icon={Clock} />
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-              <h3 className="font-bold text-sm text-gray-900 mb-4">Top Selling Menu Items</h3>
+            <div className="bg-cafe-card rounded-2xl border border-cafe-border p-6 shadow-sm">
+              <h3 className="font-bold text-sm text-cafe-text mb-4">Top Selling Menu Items</h3>
               <SalesChart data={analytics?.topSellingItems || []} />
             </div>
           </>

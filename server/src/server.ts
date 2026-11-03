@@ -179,9 +179,12 @@ const seedInitialData = async () => {
 
     // 3. Seed Default Staff Accounts (Customers require zero authentication)
     const seedAccounts = [
-      { name: 'Master Owner', email: 'owner@cafe.com', pass: 'owner1234', role: 'Owner' as const },
-      { name: 'Kitchen Head', email: 'kitchen@cafe.com', pass: 'kitchen1234', role: 'KitchenStaff' as const },
-      { name: 'Floor Staff', email: 'staff@cafe.com', pass: 'staff1234', role: 'Staff' as const },
+      { name: 'Master Owner', email: 'owner@cafe.com', pass: 'owner1234', role: 'Owner' as const, isProtected: true, isDemo: false },
+      { name: 'Kitchen Head', email: 'kitchen@cafe.com', pass: 'kitchen1234', role: 'KitchenStaff' as const, isProtected: false, isDemo: false },
+      { name: 'Floor Staff', email: 'staff@cafe.com', pass: 'staff1234', role: 'Staff' as const, isProtected: false, isDemo: false },
+      { name: 'Demo Cafe Owner', email: 'demo-owner@cafe.com', pass: 'demo1234', role: 'Owner' as const, isProtected: false, isDemo: true },
+      { name: 'Demo Kitchen Staff', email: 'demo-kitchen@cafe.com', pass: 'demo1234', role: 'KitchenStaff' as const, isProtected: false, isDemo: true },
+      { name: 'Demo Floor Staff', email: 'demo-staff@cafe.com', pass: 'demo1234', role: 'Staff' as const, isProtected: false, isDemo: true },
     ];
 
     // Clean up any previously seeded customer accounts
@@ -196,8 +199,10 @@ const seedInitialData = async () => {
           email: acc.email,
           passwordHash,
           role: acc.role,
+          isProtected: acc.isProtected,
+          isDemo: acc.isDemo,
         },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
+        { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
       );
       console.log(`Configured default ${acc.role} account: ${acc.email} / ${acc.pass}`);
     }

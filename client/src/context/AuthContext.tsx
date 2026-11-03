@@ -1,10 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {
-  signInWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  User as FirebaseUser,
-} from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut as firebaseSignOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../config/firebase.js';
 import { api } from '../lib/api.js';
 import { AdminUser, UserRole } from '../types/index.js';
@@ -14,6 +9,8 @@ interface AuthContextType {
   role: UserRole | null;
   loading: boolean;
   login: (email: string, pass: string) => Promise<{ success: boolean; role: UserRole }>;
+  register: (name: string, email: string, pass: string, role?: UserRole) => Promise<{ success: boolean; role: UserRole }>;
+  demoLogin: (role: UserRole) => Promise<{ success: boolean; role: UserRole }>;
   logout: () => Promise<void>;
 }
 
@@ -27,78 +24,75 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (fbUser: FirebaseUser | null) => {
+    const unsub = onAuthStateChanged(auth, async (fbUser: FirebaseUser | null) => {
       if (fbUser) {
         try {
           const idToken = await fbUser.getIdToken();
-          const syncRes = await api.post('/auth/firebase-sync', {
-            idToken,
-            email: fbUser.email,
-            name: fbUser.displayName || fbUser.email?.split('@')[0],
-          });
-          if (syncRes.data.success) {
-            localStorage.setItem('token', syncRes.data.token);
-            localStorage.setItem('user', JSON.stringify(syncRes.data.user));
-            setUser(syncRes.data.user);
-          }
-        } catch {
-          // Token sync fallback to existing stored user
-        }
+          const r = await api.post('/auth/firebase-sync', { idToken, email: fbUser.email, name: fbUser.displayName || fbUser.email?.split('@')[0] });
+          if (r.data.success) { localStorage.setItem('token', r.data.token); localStorage.setItem('user', JSON.stringify(r.data.user)); setUser(r.data.user); }
+        } catch { /* Fallback */ }
       }
       setLoading(false);
     });
-    return () => unsubscribe();
+    return () => unsub();
   }, []);
 
   const login = async (email: string, pass: string): Promise<{ success: boolean; role: UserRole }> => {
     let syncedUser: AdminUser | null = null;
     let token = '';
-
-    // 1. Try Firebase Authentication first
     try {
       const cred = await signInWithEmailAndPassword(auth, email, pass);
       const idToken = await cred.user.getIdToken();
-      const syncRes = await api.post('/auth/firebase-sync', {
-        idToken,
-        email: cred.user.email,
-        name: cred.user.displayName || email.split('@')[0],
-      });
-      if (syncRes.data.success) {
-        token = syncRes.data.token;
-        syncedUser = syncRes.data.user;
-      }
+      const r = await api.post('/auth/firebase-sync', { idToken, email: cred.user.email, name: cred.user.displayName || email.split('@')[0] });
+      if (r.data.success) { token = r.data.token; syncedUser = r.data.user; }
     } catch {
-      // 2. Fallback to MongoDB direct authentication if Firebase throws
-      const res = await api.post('/auth/login', { email, password: pass });
-      if (res.data.success) {
-        token = res.data.token;
-        syncedUser = res.data.user;
-      }
+      const r = await api.post('/auth/login', { email, password: pass });
+      if (r.data.success) { token = r.data.token; syncedUser = r.data.user; }
     }
-
-    if (!syncedUser || !token) {
-      throw new Error('Authentication failed. Please verify credentials.');
-    }
-
+    if (!syncedUser || !token) throw new Error('Authentication failed. Check credentials.');
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(syncedUser));
     setUser(syncedUser);
     return { success: true, role: syncedUser.role };
   };
 
-  const logout = async () => {
+  const register = async (name: string, email: string, pass: string, role: UserRole = 'Staff') => {
     try {
-      await firebaseSignOut(auth);
-    } catch {
-      // ignore
+      const res = await api.post('/auth/register', { name, email, password: pass, role });
+      if (!res.data.success || !res.data.user) throw new Error(res.data.message || 'Registration failed.');
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      setUser(res.data.user);
+      return { success: true, role: res.data.user.role };
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
+      if (axiosErr.response?.status === 409) {
+        try { return await login(email, pass); } catch {
+          throw new Error(axiosErr.response?.data?.message || 'Account already exists. Please sign in.');
+        }
+      }
+      throw new Error(axiosErr.response?.data?.message || axiosErr.message || 'Registration failed.');
     }
+  };
+
+  const demoLogin = async (role: UserRole) => {
+    const res = await api.post('/auth/demo-login', { role });
+    if (!res.data.success || !res.data.user) throw new Error('Could not launch demo session.');
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('user', JSON.stringify(res.data.user));
+    setUser(res.data.user);
+    return { success: true, role: res.data.user.role };
+  };
+
+  const logout = async () => {
+    try { await firebaseSignOut(auth); } catch { /* ignore */ }
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, role: user?.role || null, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, role: user?.role || null, loading, login, register, demoLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

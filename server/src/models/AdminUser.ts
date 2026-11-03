@@ -9,6 +9,8 @@ export interface IAdminUser extends Document {
   email: string;
   passwordHash: string;
   role: UserRole;
+  isDemo?: boolean;
+  isProtected?: boolean;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -42,6 +44,14 @@ const AdminUserSchema = new Schema<IAdminUser>(
       required: true,
       enum: ['Owner', 'KitchenStaff', 'Staff'],
       default: 'Staff',
+    },
+    isDemo: {
+      type: Boolean,
+      default: false,
+    },
+    isProtected: {
+      type: Boolean,
+      default: false,
     },
   },
   {

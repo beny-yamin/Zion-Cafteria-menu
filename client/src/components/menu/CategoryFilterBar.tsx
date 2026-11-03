@@ -18,15 +18,15 @@ export const CategoryFilterBar: React.FC<CategoryFilterBarProps> = ({
   onSearchChange,
 }) => {
   return (
-    <div className="space-y-3 mb-6">
+    <div className="space-y-3 mb-6 transition-colors">
       <div className="relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-cafe-muted" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search food, desserts, or drinks..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm"
+          placeholder="Search food, desserts, or Ethiopian coffee..."
+          className="w-full pl-10 pr-4 py-2.5 bg-cafe-card border border-cafe-border rounded-xl text-sm text-cafe-text placeholder-cafe-muted focus:outline-none focus:border-cafe-amber focus:ring-1 focus:ring-cafe-amber shadow-sm transition-colors"
         />
       </div>
 
@@ -37,10 +37,10 @@ export const CategoryFilterBar: React.FC<CategoryFilterBarProps> = ({
             <button
               key={cat}
               onClick={() => onSelectCategory(cat)}
-              className={`touch-target px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`touch-target px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 isActive
-                  ? 'bg-amber-600 text-white shadow-sm'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                  ? 'bg-cafe-amber text-white shadow-sm'
+                  : 'bg-cafe-card text-cafe-muted border border-cafe-border hover:bg-cafe-cream hover:text-cafe-text'
               }`}
             >
               {cat}

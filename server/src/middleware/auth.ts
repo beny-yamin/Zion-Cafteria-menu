@@ -30,6 +30,8 @@ export interface AuthenticatedUser {
   email?: string;
   name?: string;
   role?: UserRole | string;
+  isDemo?: boolean;
+  isProtected?: boolean;
 }
 
 export interface AuthRequest extends Request {
@@ -59,40 +61,41 @@ export const requireAuth = async (
       const decodedToken = await getAuth().verifyIdToken(token);
       let role: UserRole = 'Staff';
 
-      // Look up user in MongoDB to retrieve role assignment
+      // Check DB for existing role mapping
       const dbUser = await AdminUser.findOne({
         $or: [
           { firebaseUid: decodedToken.uid },
-          { email: decodedToken.email?.toLowerCase() },
+          ...(decodedToken.email ? [{ email: decodedToken.email.toLowerCase() }] : []),
         ],
       });
 
       if (dbUser) {
         role = dbUser.role;
-      } else if (decodedToken.role) {
-        role = decodedToken.role as UserRole;
       }
 
       req.user = {
         id: decodedToken.uid,
         email: decodedToken.email,
-        name: decodedToken.name || dbUser?.name || 'User',
+        name: decodedToken.name || decodedToken.email?.split('@')[0],
         role,
+        isDemo: dbUser?.isDemo || false,
+        isProtected: dbUser?.isProtected || false,
       };
       next();
       return;
     } catch {
-      // If Firebase verification fails, fallback to local JWT verification
+      // Not a valid Firebase ID token; fall through to custom JWT verification
     }
   }
 
-  // 2. Local JWT Token verification fallback
-  const jwtSecret = process.env.JWT_SECRET || 'super_secret_cafe_jwt_key_2026_dev';
+  // 2. Custom JWT verification
   try {
+    const jwtSecret = process.env.JWT_SECRET || 'super_secret_cafe_jwt_key_2026_dev';
     const decoded = jwt.verify(token, jwtSecret) as AuthenticatedUser;
     req.user = decoded;
     next();
-  } catch {
+  } catch (err) {
+    console.error('JWT verification error:', err);
     res.status(401).json({
       success: false,
       message: 'Invalid or expired authentication token.',
@@ -100,17 +103,20 @@ export const requireAuth = async (
   }
 };
 
-export const requireRole = (allowedRoles: Array<UserRole>) => {
+export const requireRole = (allowedRoles: UserRole[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
-    if (!req.user) {
-      res.status(401).json({ success: false, message: 'Unauthenticated.' });
+    if (!req.user || !req.user.role) {
+      res.status(401).json({
+        success: false,
+        message: 'Authentication required.',
+      });
       return;
     }
 
-    if (!req.user.role || !allowedRoles.includes(req.user.role as UserRole)) {
+    if (!allowedRoles.includes(req.user.role as UserRole)) {
       res.status(403).json({
         success: false,
-        message: 'Forbidden. You do not have permission to access this resource.',
+        message: `Forbidden: Access requires one of the following roles: ${allowedRoles.join(', ')}.`,
       });
       return;
     }
