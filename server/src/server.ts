@@ -51,6 +51,12 @@ app.use(
   })
 );
 app.use(express.json());
+app.get('/', (_req, res) => {
+  res.json({
+    success: true,
+    message: 'Zion Cafeteria Backend is running'
+  });
+});
 app.use(express.urlencoded({ extended: true }));
 
 // Health Check
