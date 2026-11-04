@@ -51,10 +51,10 @@ app.use(
   })
 );
 app.use(express.json());
-app.get('/', (_req, res) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({
     success: true,
-    message: 'Zion Cafeteria Backend is running'
+    message: 'Zion Cafeteria Backend is running',
   });
 });
 app.use(express.urlencoded({ extended: true }));
