@@ -22,8 +22,8 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
     "src/test-e2e.ts",
-  "src/test-rbac.ts"
+    "src/test-rbac.ts"
   ]
 }
