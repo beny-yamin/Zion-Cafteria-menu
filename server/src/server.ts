@@ -28,12 +28,23 @@ import { AdminUser } from './models/AdminUser.js';
 const app = express();
 const server = http.createServer(app);
 
-const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+const clientOrigin = process.env.CLIENT_ORIGIN ? process.env.CLIENT_ORIGIN.replace(/\/$/, '') : undefined;
+
+const allowedOrigins = Array.from(
+  new Set([
+    'https://zion-cafteria-frontend1.onrender.com',
+    ...(clientOrigin ? [clientOrigin] : []),
+    'http://localhost:5176',
+    'http://localhost:5175',
+    'http://localhost:5173',
+    'http://localhost:3000',
+  ])
+);
 
 // Configure Socket.io
 const io = new SocketIOServer(server, {
   cors: {
-    origin: [clientOrigin, 'http://localhost:5176', 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
   },
@@ -43,11 +54,13 @@ const io = new SocketIOServer(server, {
 app.set('io', io);
 
 // Security & Parsing Middleware
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(
   cors({
-    origin: [clientOrigin, 'http://localhost:5176', 'http://localhost:5175', 'http://localhost:5173', 'http://localhost:3000'],
+    origin: allowedOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 app.use(express.json());
@@ -224,7 +237,7 @@ connectDB().then(async () => {
   await seedInitialData();
   server.listen(PORT, () => {
     console.log(`Cafe Server listening on port ${PORT}`);
-    console.log(`Client Origin configured for: ${clientOrigin}`);
+    console.log(`Allowed Origins: ${allowedOrigins.join(', ')}`);
   });
 });
 
