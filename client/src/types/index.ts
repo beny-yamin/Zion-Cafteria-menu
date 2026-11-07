@@ -15,8 +15,18 @@ export interface MenuItem {
   updatedAt: string;
 }
 
-export type OrderStatus = 'Received' | 'Cooking' | 'Ready' | 'Served' | 'Cancelled';
-export type PaymentStatus = 'Pending' | 'Paid';
+export type OrderStatus =
+  | 'Pending'
+  | 'Accepted'
+  | 'Preparing'
+  | 'Ready'
+  | 'Completed'
+  | 'Cancelled'
+  | 'Received'
+  | 'Cooking'
+  | 'Served';
+
+export type PaymentStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded';
 
 export interface OrderItem {
   menuItemId: string;
@@ -28,23 +38,35 @@ export interface OrderItem {
 
 export interface Order {
   _id: string;
+  orderNumber?: number;
   tableNumber: number;
   items: OrderItem[];
   subtotal: number;
   tax: number;
   totalAmount: number;
+  currency?: string;
   paymentStatus: PaymentStatus;
   orderStatus: OrderStatus;
+  tx_ref?: string;
+  customerName?: string;
+  customerEmail?: string;
   estimatedPrepTimeMinutes: number;
   servedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
 
+export type QrType = 'table' | 'general';
+export type QrStatus = 'active' | 'deactivated';
+
 export interface Table {
   _id: string;
   tableNumber: number;
+  name?: string;
+  type?: QrType;
+  status?: QrStatus;
   qrCodeUrl: string;
+  targetUrl?: string;
   isOccupied: boolean;
   activeOrderId?: Order | string | null;
   createdAt: string;

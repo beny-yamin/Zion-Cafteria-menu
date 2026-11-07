@@ -18,7 +18,7 @@ export const CartItemRow: React.FC<CartItemRowProps> = ({
       <div className="flex-1 min-w-0">
         <h4 className="font-bold text-sm text-cafe-text truncate">{item.menuItem.name}</h4>
         <div className="text-xs text-cafe-amber font-black mt-0.5">
-          ${(item.menuItem.price * item.quantity).toFixed(2)}
+          {(item.menuItem.price * item.quantity).toFixed(2)} ETB
         </div>
         {item.specialInstructions && (
           <p className="text-[11px] text-cafe-muted italic mt-0.5 truncate">

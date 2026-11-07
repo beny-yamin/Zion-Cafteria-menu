@@ -12,8 +12,7 @@ interface CartDrawerProps {
   totalAmount: number;
   onUpdateQuantity: (menuItemId: string, qty: number) => void;
   onRemove: (menuItemId: string) => void;
-  onSubmitOrder: () => void;
-  isSubmitting: boolean;
+  onProceedToCheckout: () => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -25,8 +24,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   totalAmount,
   onUpdateQuantity,
   onRemove,
-  onSubmitOrder,
-  isSubmitting,
+  onProceedToCheckout,
 }) => {
   if (!isOpen) return null;
 
@@ -38,7 +36,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           <div className="px-5 py-4 border-b border-cafe-border flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <ShoppingBag className="w-5 h-5 text-cafe-amber" />
-              <h2 className="text-base font-bold text-cafe-text">Your Table Order</h2>
+              <h2 className="text-base font-bold text-cafe-text">Your Order Cart</h2>
             </div>
             <button
               onClick={onClose}
@@ -73,31 +71,24 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="space-y-1.5 text-xs text-cafe-muted">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-bold text-cafe-text">${subtotal.toFixed(2)}</span>
+                  <span className="font-bold text-cafe-text">{subtotal.toFixed(2)} ETB</span>
                 </div>
                 <div className="flex justify-between">
                   <span>VAT & Service (15%)</span>
-                  <span className="font-bold text-cafe-text">${tax.toFixed(2)}</span>
+                  <span className="font-bold text-cafe-text">{tax.toFixed(2)} ETB</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-cafe-text pt-2 border-t border-cafe-border">
                   <span>Total Amount</span>
-                  <span className="text-cafe-amber text-base font-black">${totalAmount.toFixed(2)}</span>
+                  <span className="text-cafe-amber text-base font-black">{totalAmount.toFixed(2)} ETB</span>
                 </div>
               </div>
 
               <button
-                onClick={onSubmitOrder}
-                disabled={isSubmitting}
-                className="w-full touch-target min-h-[44px] py-3.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold text-sm rounded-xl flex items-center justify-center space-x-2 shadow-md transition-all disabled:opacity-60"
+                onClick={onProceedToCheckout}
+                className="w-full touch-target min-h-[44px] py-3.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold text-sm rounded-xl flex items-center justify-center space-x-2 shadow-md transition-all active:scale-[0.98]"
               >
-                {isSubmitting ? (
-                  <span>Submitting to Kitchen...</span>
-                ) : (
-                  <>
-                    <span>Confirm Order (${totalAmount.toFixed(2)})</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
+                <span>Proceed to Checkout</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           )}

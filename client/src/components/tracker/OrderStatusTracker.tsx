@@ -1,23 +1,23 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { CheckCircle2, ChefHat, Clock, Sparkles, XCircle } from 'lucide-react';
-import { Order, OrderStatus } from '../../types/index.js';
+import { Order } from '../../types/index.js';
 
 interface OrderStatusTrackerProps {
   order: Order;
   onDismiss?: () => void;
 }
 
-const STEPS: Array<{ key: OrderStatus; label: string; icon: React.ElementType }> = [
-  { key: 'Received', label: 'Order Sent', icon: Clock },
-  { key: 'Cooking', label: 'In Kitchen', icon: ChefHat },
-  { key: 'Ready', label: 'Ready', icon: Sparkles },
-  { key: 'Served', label: 'Served', icon: CheckCircle2 },
+const STEPS = [
+  { keys: ['Pending', 'Received', 'Accepted'], label: 'Accepted', icon: Clock },
+  { keys: ['Preparing', 'Cooking'], label: 'Preparing', icon: ChefHat },
+  { keys: ['Ready'], label: 'Ready', icon: Sparkles },
+  { keys: ['Completed', 'Served'], label: 'Completed', icon: CheckCircle2 },
 ];
 
 export const OrderStatusTracker: React.FC<OrderStatusTrackerProps> = ({ order }) => {
   useEffect(() => {
-    if (order.orderStatus === 'Ready' || order.orderStatus === 'Served') {
+    if (order.orderStatus === 'Ready' || order.orderStatus === 'Completed' || order.orderStatus === 'Served') {
       confetti({
         particleCount: 80,
         spread: 60,
@@ -36,17 +36,20 @@ export const OrderStatusTracker: React.FC<OrderStatusTrackerProps> = ({ order })
     );
   }
 
-  const currentIndex = STEPS.findIndex((s) => s.key === order.orderStatus);
+  const currentIndex = STEPS.findIndex((s) => s.keys.includes(order.orderStatus));
 
   return (
     <div className="bg-cafe-card border border-cafe-border rounded-2xl p-4 shadow-sm my-4 transition-colors">
       <div className="flex items-center justify-between pb-3 border-b border-cafe-border">
-        <div>
-          <span className="text-[11px] font-bold text-cafe-amber uppercase tracking-wider">Live Order Status</span>
-          <h4 className="font-bold text-cafe-text text-sm">Order #{order._id.slice(-6).toUpperCase()}</h4>
+        <div className="flex items-center space-x-2">
+          <span className="text-[11px] font-bold text-cafe-amber uppercase tracking-wider">Live Tracker</span>
+          <h4 className="font-bold text-cafe-text text-sm">Order #{order.orderNumber || order._id.slice(-4)}</h4>
+          <span className="bg-emerald-500 text-white font-black text-[10px] px-2 py-0.5 rounded-full uppercase">
+            {order.paymentStatus || 'PAID'}
+          </span>
         </div>
         <span className="text-xs font-bold px-2.5 py-1 bg-cafe-deep text-cafe-amber rounded-full border border-cafe-amber/30">
-          Table {order.tableNumber}
+          {order.tableNumber > 0 ? `Table ${order.tableNumber}` : 'General'}
         </span>
       </div>
 
@@ -57,7 +60,7 @@ export const OrderStatusTracker: React.FC<OrderStatusTrackerProps> = ({ order })
           const isCurrent = idx === currentIndex;
 
           return (
-            <div key={step.key} className="flex flex-col items-center">
+            <div key={step.label} className="flex flex-col items-center">
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                   isCurrent

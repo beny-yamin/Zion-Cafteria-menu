@@ -1,7 +1,17 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
-export type OrderStatus = 'Received' | 'Cooking' | 'Ready' | 'Served' | 'Cancelled';
-export type PaymentStatus = 'Pending' | 'Paid';
+export type OrderStatus =
+  | 'Pending'
+  | 'Accepted'
+  | 'Preparing'
+  | 'Ready'
+  | 'Completed'
+  | 'Cancelled'
+  | 'Received'
+  | 'Cooking'
+  | 'Served';
+
+export type PaymentStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded';
 
 export interface IOrderItem {
   menuItemId: Types.ObjectId;
@@ -12,13 +22,19 @@ export interface IOrderItem {
 }
 
 export interface IOrder extends Document {
+  orderNumber: number;
   tableNumber: number;
   items: IOrderItem[];
   subtotal: number;
   tax: number;
   totalAmount: number;
+  currency: 'ETB';
   paymentStatus: PaymentStatus;
   orderStatus: OrderStatus;
+  paymentId?: Types.ObjectId;
+  tx_ref?: string;
+  customerName?: string;
+  customerEmail?: string;
   estimatedPrepTimeMinutes: number;
   servedAt?: Date;
   createdAt: Date;
@@ -58,9 +74,14 @@ const OrderItemSchema = new Schema<IOrderItem>(
 
 const OrderSchema = new Schema<IOrder>(
   {
+    orderNumber: {
+      type: Number,
+      index: true,
+    },
     tableNumber: {
       type: Number,
       required: true,
+      index: true,
     },
     items: {
       type: [OrderItemSchema],
@@ -85,15 +106,52 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
       min: 0,
     },
+    currency: {
+      type: String,
+      enum: ['ETB'],
+      default: 'ETB',
+    },
     paymentStatus: {
       type: String,
-      enum: ['Pending', 'Paid'],
+      enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
       default: 'Pending',
+      index: true,
     },
     orderStatus: {
       type: String,
-      enum: ['Received', 'Cooking', 'Ready', 'Served', 'Cancelled'],
-      default: 'Received',
+      enum: [
+        'Pending',
+        'Accepted',
+        'Preparing',
+        'Ready',
+        'Completed',
+        'Cancelled',
+        'Received',
+        'Cooking',
+        'Served',
+      ],
+      default: 'Pending',
+      index: true,
+    },
+    paymentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Payment',
+      default: null,
+    },
+    tx_ref: {
+      type: String,
+      default: '',
+      index: true,
+    },
+    customerName: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    customerEmail: {
+      type: String,
+      default: '',
+      trim: true,
     },
     estimatedPrepTimeMinutes: {
       type: Number,
@@ -109,7 +167,7 @@ const OrderSchema = new Schema<IOrder>(
   }
 );
 
-// High performance index for active kitchen display and analytics queries
-OrderSchema.index({ orderStatus: 1, createdAt: -1 });
+// High performance indices for active kitchen display and analytics queries
+OrderSchema.index({ paymentStatus: 1, orderStatus: 1, createdAt: -1 });
 
 export const Order = mongoose.model<IOrder>('Order', OrderSchema);

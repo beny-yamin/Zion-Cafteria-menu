@@ -17,14 +17,22 @@ export const KitchenDisplayPage: React.FC = () => {
   const [isStockDrawerOpen, setIsStockDrawerOpen] = useState(false);
 
   useEffect(() => {
-    api.get('/orders/active').then((res) => { if (res.data.success) setOrders(res.data.orders); });
+    api.get('/orders/active').then((res) => {
+      if (res.data.success) {
+        setOrders(res.data.orders.filter((o: Order) => o.paymentStatus === 'Paid'));
+      }
+    });
     api.get('/menu').then((res) => { if (res.data.success) setMenuItems(res.data.items); });
   }, []);
 
   useOrderSocket({
-    onNewOrder: (newOrder) => setOrders((prev) => [newOrder, ...prev]),
+    onNewOrder: (newOrder) => {
+      if (newOrder.paymentStatus === 'Paid') {
+        setOrders((prev) => [newOrder, ...prev.filter((o) => o._id !== newOrder._id)]);
+      }
+    },
     onStatusChange: ({ orderId, orderStatus }) => {
-      setOrders((prev) => (orderStatus === 'Served' || orderStatus === 'Cancelled')
+      setOrders((prev) => (orderStatus === 'Completed' || orderStatus === 'Served' || orderStatus === 'Cancelled')
         ? prev.filter((o) => o._id !== orderId)
         : prev.map((o) => (o._id === orderId ? { ...o, orderStatus } : o)));
     },
@@ -34,7 +42,7 @@ export const KitchenDisplayPage: React.FC = () => {
     try {
       const res = await api.patch(`/orders/${orderId}/status`, { orderStatus: status });
       if (res.data.success) {
-        setOrders((prev) => (status === 'Served' || status === 'Cancelled')
+        setOrders((prev) => (status === 'Completed' || status === 'Served' || status === 'Cancelled')
           ? prev.filter((o) => o._id !== orderId)
           : prev.map((o) => (o._id === orderId ? { ...o, orderStatus: status } : o)));
       }
@@ -50,8 +58,8 @@ export const KitchenDisplayPage: React.FC = () => {
     } catch (e) { console.error('Stock toggle failed', e); }
   };
 
-  const receivedOrders = orders.filter((o) => o.orderStatus === 'Received');
-  const cookingOrders = orders.filter((o) => o.orderStatus === 'Cooking');
+  const acceptedOrders = orders.filter((o) => o.orderStatus === 'Accepted' || o.orderStatus === 'Received' || o.orderStatus === 'Pending');
+  const preparingOrders = orders.filter((o) => o.orderStatus === 'Preparing' || o.orderStatus === 'Cooking');
   const readyOrders = orders.filter((o) => o.orderStatus === 'Ready');
 
   return (
@@ -63,7 +71,7 @@ export const KitchenDisplayPage: React.FC = () => {
           </div>
           <div>
             <h1 className="font-black text-lg tracking-wide uppercase text-[#FFF4E6]">Zion Kitchen Display</h1>
-            <p className="text-xs text-[#C5B49F]">{orders.length} active orders in queue</p>
+            <p className="text-xs text-[#C5B49F]">{orders.length} verified paid orders in queue</p>
           </div>
         </div>
 
@@ -86,19 +94,19 @@ export const KitchenDisplayPage: React.FC = () => {
       <main className="flex-1 p-6 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-x-auto">
         <div className="flex flex-col">
           <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-cafe-amber">
-            <h2 className="font-bold text-sm text-cafe-amber uppercase tracking-wider">New Orders ({receivedOrders.length})</h2>
+            <h2 className="font-bold text-sm text-cafe-amber uppercase tracking-wider">New Paid ({acceptedOrders.length})</h2>
           </div>
           <div className="space-y-4 overflow-y-auto flex-1">
-            {receivedOrders.map((o) => <OrderTicketCard key={o._id} order={o} onUpdateStatus={handleUpdateStatus} />)}
+            {acceptedOrders.map((o) => <OrderTicketCard key={o._id} order={o} onUpdateStatus={handleUpdateStatus} />)}
           </div>
         </div>
 
         <div className="flex flex-col">
           <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-amber-500">
-            <h2 className="font-bold text-sm text-amber-500 uppercase tracking-wider">Cooking ({cookingOrders.length})</h2>
+            <h2 className="font-bold text-sm text-amber-500 uppercase tracking-wider">Preparing ({preparingOrders.length})</h2>
           </div>
           <div className="space-y-4 overflow-y-auto flex-1">
-            {cookingOrders.map((o) => <OrderTicketCard key={o._id} order={o} onUpdateStatus={handleUpdateStatus} />)}
+            {preparingOrders.map((o) => <OrderTicketCard key={o._id} order={o} onUpdateStatus={handleUpdateStatus} />)}
           </div>
         </div>
 

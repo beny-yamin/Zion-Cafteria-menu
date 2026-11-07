@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { DollarSign, ShoppingBag, Clock, Plus, LogOut, LayoutDashboard, QrCode, Users, ChefHat, Utensils, Smartphone } from 'lucide-react';
+import { Coins, ShoppingBag, Clock, Plus, LogOut, LayoutDashboard, QrCode, Users, ChefHat, Utensils, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { AnalyticsData, Table } from '../types/index.js';
@@ -92,7 +92,7 @@ export const OwnerDashboardPage: React.FC = () => {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <KpiCard title="Total Revenue" value={`$${(analytics?.totalRevenue || 0).toFixed(2)}`} icon={DollarSign} />
+              <KpiCard title="Total Revenue" value={`${(analytics?.totalRevenue || 0).toFixed(0)} ETB`} icon={Coins} />
               <KpiCard title="Orders Served" value={analytics?.orderCount || 0} icon={ShoppingBag} />
               <KpiCard title="Average Kitchen Speed" value={`${analytics?.avgPrepTimeMinutes || 0} min`} icon={Clock} />
             </div>

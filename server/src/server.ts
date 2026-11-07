@@ -21,19 +21,21 @@ import orderRoutes from './routes/orderRoutes.js';
 import tableRoutes from './routes/tableRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 import { MenuItem } from './models/MenuItem.js';
 import { Table } from './models/Table.js';
 import { AdminUser } from './models/AdminUser.js';
+import { getTableQrUrl, getQrBaseUrl } from './utils/qrUrl.js';
 
 const app = express();
 const server = http.createServer(app);
 
-const clientOrigin = process.env.CLIENT_ORIGIN ? process.env.CLIENT_ORIGIN.replace(/\/$/, '') : undefined;
+const clientOrigin = getQrBaseUrl();
 
 const allowedOrigins = Array.from(
   new Set([
     'https://zion-cafteria-frontend1.onrender.com',
-    ...(clientOrigin ? [clientOrigin] : []),
+    clientOrigin,
     'http://localhost:5176',
     'http://localhost:5175',
     'http://localhost:5173',
@@ -83,6 +85,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Socket.io connection logging & room handling
 io.on('connection', (socket) => {
@@ -103,7 +106,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Automatic Seeder for First-Time Setup
+// Automatic Seeder & Migration for QR Codes and Data
 const seedInitialData = async () => {
   try {
     // 1. Seed Menu Catalog
@@ -133,7 +136,7 @@ const seedInitialData = async () => {
         },
         {
           name: 'Margherita Flatbread',
-          description: 'Stone-baked thin crust with San Marzano tomatoes, fresh buffalo mozzarella, and basil.',
+          description: 'Stone-baked thin crust with San San Marzano tomatoes, fresh buffalo mozzarella, and basil.',
           price: 11.0,
           category: 'Main Dishes',
           dietaryTags: ['Vegetarian'],
@@ -175,25 +178,65 @@ const seedInitialData = async () => {
       console.log('Seeded 6 starter menu items.');
     }
 
-    // 2. Seed Tables
+    // 2. Seed Tables and General Cafeteria QR using canonical deployed URL
     const tableCount = await Table.countDocuments();
     if (tableCount === 0) {
-      console.log('Generating initial QR codes for Tables 1 through 8...');
+      console.log('Generating initial QR fleet with canonical deployed URL...');
+      const generalUrl = getTableQrUrl(0);
+      const generalQr = await QRCode.toDataURL(generalUrl, {
+        errorCorrectionLevel: 'H',
+        margin: 2,
+        width: 320,
+        color: { dark: '#000000', light: '#ffffff' },
+      });
+      await Table.create({
+        tableNumber: 0,
+        name: 'General Cafeteria',
+        type: 'general',
+        status: 'active',
+        qrCodeUrl: generalQr,
+        targetUrl: generalUrl,
+        isOccupied: false,
+      });
+
       for (let i = 1; i <= 8; i++) {
-        const menuUrl = `${clientOrigin}/menu?table=${i}`;
+        const menuUrl = getTableQrUrl(i);
         const qrCodeUrl = await QRCode.toDataURL(menuUrl, {
           errorCorrectionLevel: 'H',
           margin: 2,
-          width: 300,
+          width: 320,
+          color: { dark: '#000000', light: '#ffffff' },
         });
 
         await Table.create({
           tableNumber: i,
+          name: `Table ${i}`,
+          type: 'table',
+          status: 'active',
           qrCodeUrl,
+          targetUrl: menuUrl,
           isOccupied: false,
         });
       }
-      console.log('Seeded 8 physical tables with QR codes.');
+      console.log('Seeded General Cafeteria QR and 8 physical tables with deployed URL.');
+    } else {
+      // Auto-migrate any existing tables stored in database with localhost or legacy dev URLs
+      const allExisting = await Table.find();
+      for (const t of allExisting) {
+        const canonical = getTableQrUrl(t.tableNumber);
+        if (!t.targetUrl || t.targetUrl.includes('localhost') || t.targetUrl.includes('127.0.0.1') || t.targetUrl !== canonical) {
+          const freshQr = await QRCode.toDataURL(canonical, {
+            errorCorrectionLevel: 'H',
+            margin: 2,
+            width: 320,
+            color: { dark: '#000000', light: '#ffffff' },
+          });
+          t.targetUrl = canonical;
+          t.qrCodeUrl = freshQr;
+          await t.save();
+          console.log(`Auto-migrated QR for Table #${t.tableNumber} -> ${canonical}`);
+        }
+      }
     }
 
     // 3. Seed Default Staff Accounts (Customers require zero authentication)
@@ -226,18 +269,19 @@ const seedInitialData = async () => {
       console.log(`Configured default ${acc.role} account: ${acc.email} / ${acc.pass}`);
     }
   } catch (err) {
-    console.error('Error in initial data seeder:', err);
+    console.error('Error in initial data seeder & migration:', err);
   }
 };
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB Atlas, seed data, and start server
+// Connect to MongoDB Atlas, seed/migrate data, and start server
 connectDB().then(async () => {
   await seedInitialData();
   server.listen(PORT, () => {
     console.log(`Cafe Server listening on port ${PORT}`);
     console.log(`Allowed Origins: ${allowedOrigins.join(', ')}`);
+    console.log(`QR Base Target: ${getQrBaseUrl()}`);
   });
 });
 

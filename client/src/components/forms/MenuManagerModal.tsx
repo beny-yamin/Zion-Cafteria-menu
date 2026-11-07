@@ -68,8 +68,8 @@ export const MenuManagerModal: React.FC<MenuManagerModalProps> = ({ isOpen, onCl
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="font-bold text-cafe-text block mb-1">Price ($)</label>
-              <input required type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="9.50" className="w-full px-3 py-2 border border-cafe-border bg-cafe-cream text-cafe-text rounded-xl font-medium focus:outline-none focus:border-cafe-amber" />
+              <label className="font-bold text-cafe-text block mb-1">Price (ETB)</label>
+              <input required type="number" step="0.5" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="130" className="w-full px-3 py-2 border border-cafe-border bg-cafe-cream text-cafe-text rounded-xl font-medium focus:outline-none focus:border-cafe-amber" />
             </div>
             <div>
               <label className="font-bold text-cafe-text block mb-1">Prep Time (min)</label>

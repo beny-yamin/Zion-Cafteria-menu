@@ -1,42 +1,48 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.js';
 import { ThemeProvider } from './context/ThemeContext.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
 import { CustomerMenuPage } from './pages/CustomerMenuPage.js';
+import { PaymentVerifyPage } from './pages/PaymentVerifyPage.js';
 import { KitchenDisplayPage } from './pages/KitchenDisplayPage.js';
 import { OwnerDashboardPage } from './pages/OwnerDashboardPage.js';
 import { StaffDashboardPage } from './pages/StaffDashboardPage.js';
 import { SharedAuthPortal } from './pages/SharedAuthPortal.js';
 import { PortfolioDemoBanner } from './components/layout/PortfolioDemoBanner.js';
 
-const MainAppContent: React.FC = () => {
+const RootRoute: React.FC = () => {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
 
+  // If customer scans root QR or has table query parameter, immediately show the menu
+  if (searchParams.get('table')) {
+    return <CustomerMenuPage />;
+  }
+
+  // If already authenticated staff or owner, navigate to their dashboard
+  if (user) {
+    if (user.role === 'Owner') return <Navigate to="/owner" replace />;
+    if (user.role === 'KitchenStaff') return <Navigate to="/kitchen" replace />;
+    return <Navigate to="/staff" replace />;
+  }
+
+  // Default customer-first entry: always show the digital menu without login friction
+  return <CustomerMenuPage />;
+};
+
+const MainAppContent: React.FC = () => {
   return (
     <BrowserRouter>
       <PortfolioDemoBanner />
       <Routes>
-        <Route
-          path="/"
-          element={
-            user ? (
-              user.role === 'Owner' ? (
-                <Navigate to="/owner" replace />
-              ) : user.role === 'KitchenStaff' ? (
-                <Navigate to="/kitchen" replace />
-              ) : (
-                <Navigate to="/staff" replace />
-              )
-            ) : (
-              <SharedAuthPortal />
-            )
-          }
-        />
-        <Route path="/login" element={<SharedAuthPortal />} />
+        {/* Direct Landing: Customer Menu is primary, zero table-selection screen */}
+        <Route path="/" element={<RootRoute />} />
         <Route path="/menu" element={<CustomerMenuPage />} />
+        <Route path="/login" element={<SharedAuthPortal />} />
+        <Route path="/payment/verify" element={<PaymentVerifyPage />} />
 
-        {/* Protected Route for Owner */}
+        {/* Protected Staff & Owner Dashboards */}
         <Route
           path="/owner"
           element={
@@ -45,8 +51,6 @@ const MainAppContent: React.FC = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Protected Route for Kitchen Staff & Owner */}
         <Route
           path="/kitchen"
           element={
@@ -55,8 +59,6 @@ const MainAppContent: React.FC = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Protected Route for Floor Staff, Kitchen & Owner */}
         <Route
           path="/staff"
           element={
@@ -66,7 +68,7 @@ const MainAppContent: React.FC = () => {
           }
         />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/menu" replace />} />
       </Routes>
     </BrowserRouter>
   );

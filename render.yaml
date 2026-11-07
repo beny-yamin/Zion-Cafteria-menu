@@ -14,14 +14,24 @@ services:
         value: production
       - key: PORT
         value: 5000
+      - key: FRONTEND_URL
+        value: https://zion-cafteria-frontend1.onrender.com
       - key: CLIENT_ORIGIN
-        sync: false
+        value: https://zion-cafteria-frontend1.onrender.com
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: FIREBASE_PROJECT_ID
         value: jaaamin-rox
+      - key: CHAPA_PUBLIC_KEY
+        sync: false
+      - key: CHAPA_SECRET_KEY
+        sync: false
+      - key: CHAPA_ENCRYPTION_KEY
+        sync: false
+      - key: CHAPA_BASE_URL
+        value: https://api.chapa.co/v1
 
   # Frontend React 18 / Vite Static Site
   - type: web

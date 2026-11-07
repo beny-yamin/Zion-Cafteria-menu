@@ -6,15 +6,17 @@ import { Table } from '../models/Table.js';
 
 export const createOrder = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { tableNumber, items } = req.body;
+    const { tableNumber, items, customerName, customerEmail } = req.body;
 
-    if (!tableNumber || !Array.isArray(items) || items.length === 0) {
+    if (!Array.isArray(items) || items.length === 0) {
       res.status(400).json({
         success: false,
-        message: 'tableNumber and a non-empty items array are required.',
+        message: 'A non-empty items array is required.',
       });
       return;
     }
+
+    const assignedTable = Number(tableNumber) || 0;
 
     // Retrieve and validate menu items from database
     const itemIds = items.map((i: { menuItemId: string }) => i.menuItemId);
@@ -64,28 +66,23 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
     const tax = Math.round(subtotal * 0.15 * 100) / 100;
     const totalAmount = Math.round((subtotal + tax) * 100) / 100;
 
+    const lastOrder = await Order.findOne().sort({ createdAt: -1 }).select('orderNumber');
+    const orderNumber = lastOrder && lastOrder.orderNumber ? lastOrder.orderNumber + 1 : 1001;
+
     const order = await Order.create({
-      tableNumber: Number(tableNumber),
+      orderNumber,
+      tableNumber: assignedTable,
       items: orderItems,
       subtotal: Math.round(subtotal * 100) / 100,
       tax,
       totalAmount,
+      currency: 'ETB',
       paymentStatus: 'Pending',
-      orderStatus: 'Received',
+      orderStatus: 'Pending',
+      customerName: (customerName || '').trim(),
+      customerEmail: (customerEmail || '').trim(),
       estimatedPrepTimeMinutes: maxPrepTime,
     });
-
-    // Update physical table occupation status
-    await Table.findOneAndUpdate(
-      { tableNumber: Number(tableNumber) },
-      { isOccupied: true, activeOrderId: order._id }
-    );
-
-    // Broadcast new order via Socket.io to kitchen display
-    const io = req.app.get('io');
-    if (io) {
-      io.emit('order:new', order);
-    }
 
     res.status(201).json({ success: true, order });
   } catch (error) {
@@ -96,8 +93,10 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
 
 export const getActiveOrders = async (_req: Request, res: Response): Promise<void> => {
   try {
+    // Only display paid orders to the kitchen! Never send unpaid orders as paid.
     const orders = await Order.find({
-      orderStatus: { $nin: ['Served', 'Cancelled'] },
+      paymentStatus: 'Paid',
+      orderStatus: { $nin: ['Completed', 'Served', 'Cancelled'] },
     }).sort({ createdAt: 1 });
 
     res.json({ success: true, orders });
@@ -112,7 +111,17 @@ export const updateOrderStatus = async (req: Request, res: Response): Promise<vo
     const { id } = req.params;
     const { orderStatus } = req.body;
 
-    const validStatuses: OrderStatus[] = ['Received', 'Cooking', 'Ready', 'Served', 'Cancelled'];
+    const validStatuses: OrderStatus[] = [
+      'Pending',
+      'Accepted',
+      'Preparing',
+      'Ready',
+      'Completed',
+      'Cancelled',
+      'Received',
+      'Cooking',
+      'Served',
+    ];
     if (!validStatuses.includes(orderStatus)) {
       res.status(400).json({
         success: false,
@@ -122,7 +131,7 @@ export const updateOrderStatus = async (req: Request, res: Response): Promise<vo
     }
 
     const updateFields: Record<string, unknown> = { orderStatus };
-    if (orderStatus === 'Served') {
+    if (orderStatus === 'Completed' || orderStatus === 'Served') {
       updateFields.servedAt = new Date();
     }
 
@@ -133,8 +142,8 @@ export const updateOrderStatus = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    // If order is served or cancelled, free the table if this was its active order
-    if (orderStatus === 'Served' || orderStatus === 'Cancelled') {
+    // If order is completed, served or cancelled, free the table if this was its active order
+    if (orderStatus === 'Completed' || orderStatus === 'Served' || orderStatus === 'Cancelled') {
       await Table.findOneAndUpdate(
         { tableNumber: order.tableNumber, activeOrderId: order._id },
         { isOccupied: false, activeOrderId: null }
@@ -147,8 +156,14 @@ export const updateOrderStatus = async (req: Request, res: Response): Promise<vo
       io.emit('order:status-change', {
         orderId: order._id,
         orderStatus: order.orderStatus,
+        paymentStatus: order.paymentStatus,
         tableNumber: order.tableNumber,
         servedAt: order.servedAt,
+      });
+      io.to(`table:${order.tableNumber}`).emit('order:status-change', {
+        orderId: order._id,
+        orderStatus: order.orderStatus,
+        paymentStatus: order.paymentStatus,
       });
     }
 

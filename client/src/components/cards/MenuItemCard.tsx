@@ -52,8 +52,8 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onAddToCart })
         <div>
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-bold text-cafe-text text-base leading-snug">{item.name}</h3>
-            <span className="font-black text-cafe-amber text-base whitespace-nowrap">
-              ${item.price.toFixed(2)}
+            <span className="font-black text-cafe-amber text-sm whitespace-nowrap">
+              {item.price.toFixed(2)} ETB
             </span>
           </div>
           {item.description && (
