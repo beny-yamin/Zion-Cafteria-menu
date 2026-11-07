@@ -14,8 +14,9 @@ import { OrderStatusTracker } from '../components/tracker/OrderStatusTracker.js'
 const CATEGORIES: Array<MenuCategory | 'All'> = ['All', 'Starters', 'Main Dishes', 'Desserts', 'Hot Drinks', 'Cold Drinks'];
 
 export const CustomerMenuPage: React.FC = () => {
-  const { token } = useParams<{ token?: string }>();
+  const { token: routeToken } = useParams<{ token?: string }>();
   const [searchParams] = useSearchParams();
+  const token = routeToken || searchParams.get('m') || searchParams.get('token');
   const tableParam = searchParams.get('table');
 
   const [tableNumber, setTableNumber] = useState<number>(() => {

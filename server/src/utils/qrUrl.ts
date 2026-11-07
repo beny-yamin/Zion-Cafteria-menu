@@ -25,7 +25,7 @@ export const generateQrToken = (tableNumber: number, type: 'table' | 'general'):
 
 export const getTokenMenuUrl = (qrToken: string): string => {
   const base = getQrBaseUrl();
-  return `${base}/menu/${qrToken}`;
+  return `${base}/?m=${qrToken}`;
 };
 
 export const getTableQrUrl = (tableNumber: number, qrToken?: string): string => {

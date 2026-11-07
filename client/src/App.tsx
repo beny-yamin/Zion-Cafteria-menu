@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.js';
 import { ThemeProvider } from './context/ThemeContext.js';
 import { ProtectedRoute } from './components/auth/ProtectedRoute.js';
@@ -12,6 +12,13 @@ import { PortfolioDemoBanner } from './components/layout/PortfolioDemoBanner.js'
 
 const RootRoute: React.FC = () => {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const qrToken = searchParams.get('m') || searchParams.get('token') || searchParams.get('table');
+
+  // When customer scans QR code, directly open Customer Menu with background context
+  if (qrToken) {
+    return <CustomerMenuPage />;
+  }
 
   // Authenticated users go directly to their respective operational dashboards
   if (user) {
@@ -20,7 +27,7 @@ const RootRoute: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // Root URL (/) is strictly the main website landing and authentication page
+  // Normal root URL (/) is strictly the main website landing and authentication page
   return <SharedAuthPortal />;
 };
 
