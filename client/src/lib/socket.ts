@@ -1,6 +1,9 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const DEFAULT_SOCKET_URL = import.meta.env.PROD
+  ? 'https://zion-cafteria-backend4.onrender.com'
+  : 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || DEFAULT_SOCKET_URL;
 
 let socketInstance: Socket | null = null;
 
