@@ -13,7 +13,13 @@ import { PortfolioDemoBanner } from './components/layout/PortfolioDemoBanner.js'
 const RootRoute: React.FC = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const tx_ref = searchParams.get('tx_ref');
   const qrToken = searchParams.get('m') || searchParams.get('token') || searchParams.get('table');
+
+  // When returning from Chapa payment gateway, immediately open verification screen
+  if (tx_ref) {
+    return <PaymentVerifyPage />;
+  }
 
   // When customer scans QR code, directly open Customer Menu with background context
   if (qrToken) {

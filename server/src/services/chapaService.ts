@@ -43,7 +43,7 @@ const CHAPA_BASE_URL = process.env.CHAPA_BASE_URL || 'https://api.chapa.co/v1';
 
 export class ChapaService {
   private static getSecretKey(): string {
-    return process.env.CHAPA_SECRET_KEY || '';
+    return (process.env.CHAPA_SECRET_KEY || 'CHASECK_TEST-WmBRCg3oewnRHlu1gE51q2dPk4t7NgPk').trim();
   }
 
   public static async initialize(params: InitializePaymentParams): Promise<ChapaInitializeResponse> {
@@ -54,7 +54,7 @@ export class ChapaService {
     const nameParts = fullName ? fullName.split(' ') : ['Guest', 'Customer'];
     const firstName = nameParts[0] || 'Guest';
     const lastName = nameParts.slice(1).join(' ') || 'Customer';
-    const email = (params.email || '').trim() || 'customer@zioncafe.local';
+    const email = (params.email || '').trim() || 'customer@gmail.com';
 
     if (!secretKey) {
       console.warn('CHAPA_SECRET_KEY not set. Using test simulation sandbox response.');

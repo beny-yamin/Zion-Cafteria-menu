@@ -97,7 +97,7 @@ export const PaymentVerifyPage: React.FC = () => {
             </div>
 
             <button
-              onClick={() => navigate(verifiedOrder.tableNumber > 0 ? `/menu?table=${verifiedOrder.tableNumber}` : '/menu')}
+              onClick={() => navigate(verifiedOrder.tableNumber > 0 ? `/?m=t_${verifiedOrder.tableNumber}` : '/')}
               className="w-full touch-target min-h-[44px] py-3.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center space-x-2"
             >
               <span>Back to Cafeteria Menu</span>

@@ -99,7 +99,7 @@ export const initializePayment = async (req: Request, res: Response): Promise<vo
 
     // Determine return URL pointing directly to the deployed application
     const clientOrigin = getQrBaseUrl();
-    const returnUrl = `${clientOrigin}/payment/verify?tx_ref=${encodeURIComponent(tx_ref)}`;
+    const returnUrl = `${clientOrigin}/?tx_ref=${encodeURIComponent(tx_ref)}`;
 
     const chapaRes = await ChapaService.initialize({
       amount: totalAmount,

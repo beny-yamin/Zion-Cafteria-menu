@@ -17,9 +17,12 @@ export default defineConfig({
           const notFoundHtml = path.join(distDir, '404.html');
           if (fs.existsSync(indexHtml)) {
             fs.copyFileSync(indexHtml, notFoundHtml);
+            const verifyDir = path.join(distDir, 'payment', 'verify');
+            fs.mkdirSync(verifyDir, { recursive: true });
+            fs.copyFileSync(indexHtml, path.join(verifyDir, 'index.html'));
           }
         } catch (err) {
-          console.warn('Could not generate 404.html fallback:', err);
+          console.warn('Could not generate 404/verify fallback:', err);
         }
       },
     },
