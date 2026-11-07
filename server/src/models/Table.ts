@@ -8,6 +8,7 @@ export interface ITable extends Document {
   name: string;
   type: QrType;
   status: QrStatus;
+  qrToken: string;
   qrCodeUrl: string;
   targetUrl: string;
   isOccupied: boolean;
@@ -41,6 +42,12 @@ const TableSchema = new Schema<ITable>(
       type: String,
       enum: ['active', 'deactivated'],
       default: 'active',
+      index: true,
+    },
+    qrToken: {
+      type: String,
+      unique: true,
+      sparse: true,
       index: true,
     },
     qrCodeUrl: {

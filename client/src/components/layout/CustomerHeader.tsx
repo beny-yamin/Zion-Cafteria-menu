@@ -27,8 +27,8 @@ export const CustomerHeader: React.FC<CustomerHeaderProps> = ({
           <div>
             <h1 className="font-black text-lg text-cafe-text leading-tight tracking-tight">{cafeName}</h1>
             <div className="flex items-center space-x-2 text-xs text-cafe-muted">
-              <span className="font-bold text-cafe-text bg-cafe-cream px-2 py-0.5 rounded-full border border-cafe-border">
-                {tableNumber > 0 ? `Table #${tableNumber}` : 'General Cafeteria'}
+              <span className="font-semibold text-cafe-amber bg-cafe-amber/10 px-2 py-0.5 rounded-full border border-cafe-amber/30">
+                Digital Menu
               </span>
               <span className="flex items-center">
                 <Clock className="w-3 h-3 mr-1 text-cafe-muted" />

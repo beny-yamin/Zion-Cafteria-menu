@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { MenuItem, MenuCategory, Order } from '../types/index.js';
 import { useCart } from '../hooks/useCart.js';
@@ -14,22 +14,33 @@ import { OrderStatusTracker } from '../components/tracker/OrderStatusTracker.js'
 const CATEGORIES: Array<MenuCategory | 'All'> = ['All', 'Starters', 'Main Dishes', 'Desserts', 'Hot Drinks', 'Cold Drinks'];
 
 export const CustomerMenuPage: React.FC = () => {
+  const { token } = useParams<{ token?: string }>();
   const [searchParams] = useSearchParams();
   const tableParam = searchParams.get('table');
 
-  // Automatic background table detection from QR link data (zero user interruption)
-  const tableNumber = useMemo(() => {
-    if (tableParam !== null && tableParam !== '') {
+  const [tableNumber, setTableNumber] = useState<number>(() => {
+    if (tableParam) {
       const parsed = Math.max(0, Number(tableParam));
       try { sessionStorage.setItem('zion_table_num', String(parsed)); } catch (_) {}
       return parsed;
     }
     try {
       const saved = sessionStorage.getItem('zion_table_num');
-      if (saved !== null) return Number(saved);
+      if (saved) return Number(saved);
     } catch (_) {}
     return 1;
-  }, [tableParam]);
+  });
+
+  useEffect(() => {
+    if (!token) return;
+    api.get(`/tables/resolve/${token}`).then((res) => {
+      if (res.data?.success) {
+        const resolved = Number(res.data.tableNumber);
+        setTableNumber(resolved);
+        try { sessionStorage.setItem('zion_table_num', String(resolved)); } catch (_) {}
+      }
+    }).catch(() => {});
+  }, [token]);
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<MenuCategory | 'All'>('All');
@@ -49,9 +60,7 @@ export const CustomerMenuPage: React.FC = () => {
       api.get(`/orders/table/${tableNumber}`).then((res) => {
         if (res.data.success && res.data.orders.length > 0) {
           const latest = res.data.orders[0];
-          if (latest.orderStatus !== 'Completed' && latest.orderStatus !== 'Served' && latest.orderStatus !== 'Cancelled') {
-            setActiveOrder(latest);
-          }
+          if (!['Completed', 'Served', 'Cancelled'].includes(latest.orderStatus)) setActiveOrder(latest);
         }
       });
     }
@@ -71,16 +80,9 @@ export const CustomerMenuPage: React.FC = () => {
     if (cart.items.length === 0 || isProcessingPayment) return;
     setIsProcessingPayment(true);
     try {
-      const payload = {
-        tableNumber,
-        items: cart.items.map((i) => ({ menuItemId: i.menuItem._id, quantity: i.quantity, specialInstructions: i.specialInstructions })),
-        customerName,
-        customerEmail,
-      };
-      const res = await api.post('/payments/initialize', payload);
-      if (res.data.success && res.data.checkoutUrl) {
-        window.location.href = res.data.checkoutUrl;
-      }
+      const items = cart.items.map((i) => ({ menuItemId: i.menuItem._id, quantity: i.quantity, specialInstructions: i.specialInstructions }));
+      const res = await api.post('/payments/initialize', { tableNumber, items, customerName, customerEmail });
+      if (res.data.success && res.data.checkoutUrl) window.location.href = res.data.checkoutUrl;
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to start payment. Please try again.');
       setIsProcessingPayment(false);
@@ -90,8 +92,7 @@ export const CustomerMenuPage: React.FC = () => {
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
       const matchCat = selectedCategory === 'All' || item.category === selectedCategory;
-      const matchSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.description.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
     });
   }, [menuItems, selectedCategory, searchQuery]);
@@ -102,18 +103,15 @@ export const CustomerMenuPage: React.FC = () => {
       <main className="max-w-4xl mx-auto px-4 pt-4">
         {!tableStatus.active && (
           <div className="mb-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 text-xs font-bold text-center">
-            Notice: {tableStatus.name || `Table #${tableNumber}`} is currently marked inactive by staff. You can view the menu, but ordering is paused.
+            Notice: Ordering is temporarily paused for this table. You may view the menu while waiting.
           </div>
         )}
         {activeOrder && <OrderStatusTracker order={activeOrder} />}
         <CategoryFilterBar categories={CATEGORIES} activeCategory={selectedCategory} onSelectCategory={setSelectedCategory} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredItems.map((item) => (
-            <MenuItemCard key={item._id} item={item} onAddToCart={(i) => cart.addItem(i, 1)} />
-          ))}
+          {filteredItems.map((item) => <MenuItemCard key={item._id} item={item} onAddToCart={(i) => cart.addItem(i, 1)} />)}
         </div>
       </main>
-
       <FloatingOrderNotification itemCount={cart.totalCount} totalAmount={cart.totalAmount} onOpenOrder={() => setIsOrderPanelOpen(true)} isOpen={isOrderPanelOpen} />
       <OrderTopPopPanel isOpen={isOrderPanelOpen} onClose={() => setIsOrderPanelOpen(false)} tableNumber={tableNumber} items={cart.items} subtotal={cart.subtotal} tax={cart.tax} totalAmount={cart.totalAmount} onUpdateQuantity={cart.updateQuantity} onRemove={cart.removeItem} onProceedToPayment={handleProceedToPayment} isProcessing={isProcessingPayment} />
     </div>

@@ -21,7 +21,6 @@ interface OrderTopPopPanelProps {
 export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
   isOpen,
   onClose,
-  tableNumber,
   items,
   subtotal,
   tax,
@@ -36,9 +35,7 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
 
   if (!isOpen) return null;
 
-  const handlePay = () => {
-    onProceedToPayment(name.trim() || undefined, email.trim() || undefined);
-  };
+  const handlePay = () => onProceedToPayment(name.trim() || undefined, email.trim() || undefined);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-cafe-deep/65 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-start">
@@ -50,17 +47,10 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
             </div>
             <div>
               <h2 className="text-base font-black text-cafe-text">Review & Complete Order</h2>
-              <p className="text-xs text-cafe-muted">
-                {tableNumber > 0 ? `Serving Table #${tableNumber}` : 'General Cafeteria (Counter Pickup)'}
-              </p>
+              <p className="text-xs text-cafe-muted">Review items and proceed to payment</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            disabled={isProcessing}
-            className="touch-target w-9 h-9 rounded-full flex items-center justify-center text-cafe-muted hover:text-cafe-text hover:bg-cafe-cream"
-            aria-label="Close order panel"
-          >
+          <button onClick={onClose} disabled={isProcessing} className="touch-target w-9 h-9 rounded-full flex items-center justify-center text-cafe-muted hover:text-cafe-text hover:bg-cafe-cream" aria-label="Close order panel">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -71,12 +61,7 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
               <p className="text-xs text-cafe-muted text-center py-6">Your cart is empty.</p>
             ) : (
               items.map((item) => (
-                <CartItemRow
-                  key={item.menuItem._id}
-                  item={item}
-                  onUpdateQuantity={onUpdateQuantity}
-                  onRemove={onRemove}
-                />
+                <CartItemRow key={item.menuItem._id} item={item} onUpdateQuantity={onUpdateQuantity} onRemove={onRemove} />
               ))
             )}
           </div>
@@ -96,20 +81,10 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
             </div>
           </div>
 
-          <OptionalCustomerFields
-            name={name}
-            email={email}
-            onNameChange={setName}
-            onEmailChange={setEmail}
-            disabled={isProcessing}
-          />
+          <OptionalCustomerFields name={name} email={email} onNameChange={setName} onEmailChange={setEmail} disabled={isProcessing} />
 
           <div className="pt-2 space-y-2.5">
-            <button
-              onClick={handlePay}
-              disabled={isProcessing || items.length === 0}
-              className="w-full touch-target min-h-[48px] py-3.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center space-x-2 shadow-lg transition-all active:scale-[0.99] disabled:opacity-50"
-            >
+            <button onClick={handlePay} disabled={isProcessing || items.length === 0} className="w-full touch-target min-h-[48px] py-3.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center space-x-2 shadow-lg transition-all active:scale-[0.99] disabled:opacity-50">
               {isProcessing ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />

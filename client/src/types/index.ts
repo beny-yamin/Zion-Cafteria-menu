@@ -67,6 +67,7 @@ export interface Table {
   status?: QrStatus;
   qrCodeUrl: string;
   targetUrl?: string;
+  qrToken?: string;
   isOccupied: boolean;
   activeOrderId?: Order | string | null;
   createdAt: string;

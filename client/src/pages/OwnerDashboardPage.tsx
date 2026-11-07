@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Coins, ShoppingBag, Clock, Plus, LogOut, LayoutDashboard, QrCode, Users, ChefHat, Utensils, Smartphone } from 'lucide-react';
+import { Coins, ShoppingBag, Clock, Plus, LogOut, LayoutDashboard, QrCode, Users, ChefHat } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api.js';
 import { AnalyticsData, Table } from '../types/index.js';
@@ -9,9 +9,11 @@ import { TableQrManager } from '../components/tables/TableQrManager.js';
 import { StaffManager } from '../components/owner/StaffManager.js';
 import { MenuManagerModal } from '../components/forms/MenuManagerModal.js';
 import { ThemeSwitcher } from '../components/layout/ThemeSwitcher.js';
+import { useAuth } from '../context/AuthContext.js';
 
 export const OwnerDashboardPage: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [activeTab, setActiveTab] = useState<'analytics' | 'tables' | 'staff'>('analytics');
   const [range, setRange] = useState<'today' | 'week' | 'month'>('today');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
@@ -35,6 +37,14 @@ export const OwnerDashboardPage: React.FC = () => {
     fetchTables();
   }, [fetchAnalytics, fetchTables]);
 
+  const handleExit = async () => {
+    try {
+      await logout();
+    } finally {
+      navigate('/login', { replace: true });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-cafe-cream text-cafe-text flex flex-col transition-colors">
       <header className="bg-cafe-card border-b border-cafe-border px-6 py-3.5 flex items-center justify-between shadow-sm">
@@ -51,7 +61,7 @@ export const OwnerDashboardPage: React.FC = () => {
             </button>
             <button onClick={() => setActiveTab('staff')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'staff' ? 'bg-cafe-amber text-white shadow-sm' : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'}`}>
               <Users className="w-3.5 h-3.5" />
-              <span>Staff Management</span>
+              <span>Staff Accounts</span>
             </button>
           </nav>
         </div>
@@ -62,19 +72,11 @@ export const OwnerDashboardPage: React.FC = () => {
             <ChefHat className="w-3.5 h-3.5 text-cafe-amber" />
             <span>Kitchen</span>
           </button>
-          <button onClick={() => navigate('/staff')} className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border" title="View Floor Staff Console">
-            <Utensils className="w-3.5 h-3.5 text-cafe-deep" />
-            <span>Staff</span>
-          </button>
-          <button onClick={() => navigate('/menu?table=1')} className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border" title="View Customer Menu">
-            <Smartphone className="w-3.5 h-3.5 text-cafe-amber" />
-            <span>Menu</span>
-          </button>
           <button onClick={() => setIsMenuModalOpen(true)} className="touch-target px-3 py-1.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white text-xs font-bold rounded-xl flex items-center space-x-1 shadow-sm">
             <Plus className="w-4 h-4" />
             <span>New Item</span>
           </button>
-          <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="touch-target w-9 h-9 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:border-[#4B3024] flex items-center justify-center transition-colors" title="Log Out">
+          <button onClick={handleExit} className="touch-target w-9 h-9 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:border-[#4B3024] flex items-center justify-center transition-colors" title="Exit / Log Out">
             <LogOut className="w-4 h-4" />
           </button>
         </div>

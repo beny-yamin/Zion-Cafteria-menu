@@ -55,7 +55,7 @@ export const TableQrCard: React.FC<TableQrCardProps> = ({
           className="w-32 h-32 object-contain bg-white p-1 rounded-xl shadow-inner border border-cafe-border/30 hover:scale-105 transition-transform"
         />
         <p className="text-[10px] text-cafe-muted mt-1 font-mono truncate max-w-[140px]">
-          {table.targetUrl || (isGeneral ? '/menu' : `/menu?table=${table.tableNumber}`)}
+          {table.targetUrl || (table.qrToken ? `/menu/${table.qrToken}` : '/menu')}
         </p>
       </div>
 

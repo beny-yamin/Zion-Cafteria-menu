@@ -8,10 +8,14 @@ import {
   deleteTable,
   checkTable,
   resetTableStatus,
+  resolveQrToken,
 } from '../controllers/tableController.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 
 const router = Router();
+
+// Public: Resolve opaque QR token to internal table context without exposing table number in URL
+router.get('/resolve/:token', resolveQrToken);
 
 // Public: Check table status when customer scans QR
 router.get('/check/:tableNumber', checkTable);
