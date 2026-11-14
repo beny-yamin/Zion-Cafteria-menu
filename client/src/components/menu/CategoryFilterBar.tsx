@@ -30,20 +30,21 @@ export const CategoryFilterBar: React.FC<CategoryFilterBarProps> = ({
         />
       </div>
 
-      <div className="flex space-x-2 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 scrollbar-none -mx-1 px-1">
         {categories.map((cat) => {
           const isActive = activeCategory === cat;
           return (
             <button
               key={cat}
+              type="button"
               onClick={() => onSelectCategory(cat)}
-              className={`touch-target px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              className={`shrink-0 inline-flex items-center justify-center min-h-[40px] px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all text-center select-none ${
                 isActive
                   ? 'bg-cafe-amber text-white shadow-sm'
                   : 'bg-cafe-card text-cafe-muted border border-cafe-border hover:bg-cafe-cream hover:text-cafe-text'
               }`}
             >
-              {cat}
+              <span>{cat}</span>
             </button>
           );
         })}
