@@ -49,7 +49,7 @@ export const OwnerDashboardPage: React.FC = () => {
     <div className="min-h-screen bg-cafe-cream text-cafe-text flex flex-col transition-colors">
       <header className="bg-cafe-card border-b border-cafe-border px-6 py-3.5 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-6">
-          <h1 className="font-black text-xl text-cafe-text tracking-tight">Zion Owner Central</h1>
+          <h1 className="font-black text-xl text-cafe-text tracking-tight">Owner Dashboard</h1>
           <nav className="flex space-x-1.5">
             <button onClick={() => setActiveTab('analytics')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'analytics' ? 'bg-cafe-amber text-white shadow-sm' : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'}`}>
               <LayoutDashboard className="w-3.5 h-3.5" />
@@ -57,18 +57,18 @@ export const OwnerDashboardPage: React.FC = () => {
             </button>
             <button onClick={() => setActiveTab('tables')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'tables' ? 'bg-cafe-amber text-white shadow-sm' : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'}`}>
               <QrCode className="w-3.5 h-3.5" />
-              <span>Tables & QR</span>
+              <span>Tables</span>
             </button>
             <button onClick={() => setActiveTab('staff')} className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1 ${activeTab === 'staff' ? 'bg-cafe-amber text-white shadow-sm' : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'}`}>
               <Users className="w-3.5 h-3.5" />
-              <span>Staff Accounts</span>
+              <span>Team</span>
             </button>
           </nav>
         </div>
 
         <div className="flex items-center space-x-2">
           <ThemeSwitcher />
-          <button onClick={() => navigate('/kitchen')} className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border" title="View Kitchen Display">
+          <button onClick={() => navigate('/kitchen')} className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border" title="Kitchen">
             <ChefHat className="w-3.5 h-3.5 text-cafe-amber" />
             <span>Kitchen</span>
           </button>
@@ -76,7 +76,7 @@ export const OwnerDashboardPage: React.FC = () => {
             <Plus className="w-4 h-4" />
             <span>New Item</span>
           </button>
-          <button onClick={handleExit} className="touch-target w-9 h-9 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:border-[#4B3024] flex items-center justify-center transition-colors" title="Exit / Log Out">
+          <button onClick={handleExit} className="touch-target w-9 h-9 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:border-[#4B3024] flex items-center justify-center transition-colors" title="Exit">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -86,7 +86,7 @@ export const OwnerDashboardPage: React.FC = () => {
         {activeTab === 'analytics' && (
           <>
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-cafe-text text-base">Key Performance Indicators</h2>
+              <h2 className="font-bold text-cafe-text text-base">Performance</h2>
               <div className="flex bg-cafe-border/50 p-1 rounded-xl">
                 {(['today', 'week', 'month'] as const).map((r) => (
                   <button key={r} onClick={() => setRange(r)} className={`touch-target px-3 py-1 rounded-lg text-xs font-bold capitalize transition-all ${range === r ? 'bg-cafe-card text-cafe-text shadow-sm' : 'text-cafe-muted'}`}>{r}</button>
@@ -94,12 +94,12 @@ export const OwnerDashboardPage: React.FC = () => {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <KpiCard title="Total Revenue" value={`${(analytics?.totalRevenue || 0).toFixed(0)} ETB`} icon={Coins} />
-              <KpiCard title="Orders Served" value={analytics?.orderCount || 0} icon={ShoppingBag} />
-              <KpiCard title="Average Kitchen Speed" value={`${analytics?.avgPrepTimeMinutes || 0} min`} icon={Clock} />
+              <KpiCard title="Revenue" value={`${(analytics?.totalRevenue || 0).toFixed(0)} ETB`} icon={Coins} />
+              <KpiCard title="Orders" value={analytics?.orderCount || 0} icon={ShoppingBag} />
+              <KpiCard title="Speed" value={`${analytics?.avgPrepTimeMinutes || 0} min`} icon={Clock} />
             </div>
             <div className="bg-cafe-card rounded-2xl border border-cafe-border p-6 shadow-sm">
-              <h3 className="font-bold text-sm text-cafe-text mb-4">Top Selling Menu Items</h3>
+              <h3 className="font-bold text-sm text-cafe-text mb-4">Top Items</h3>
               <SalesChart data={analytics?.topSellingItems || []} />
             </div>
           </>

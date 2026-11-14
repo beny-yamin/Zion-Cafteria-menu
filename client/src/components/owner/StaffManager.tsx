@@ -44,15 +44,15 @@ export const StaffManager: React.FC = () => {
     <div className="space-y-4 transition-colors">
       <div className="bg-cafe-card rounded-2xl border border-cafe-border p-4 shadow-sm flex items-center justify-between">
         <div>
-          <h3 className="font-bold text-cafe-text text-sm">Team Accounts (Kitchen & Staff)</h3>
-          <p className="text-xs text-cafe-muted">Create and oversee team member accounts</p>
+          <h3 className="font-bold text-cafe-text text-sm">Team Accounts</h3>
+          <p className="text-xs text-cafe-muted">Manage team member accounts</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="touch-target px-3 py-1.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white text-xs font-bold rounded-xl flex items-center space-x-1 shadow-sm transition-colors"
         >
           <UserPlus className="w-3.5 h-3.5" />
-          <span>Add Staff / Kitchen</span>
+          <span>Add User</span>
         </button>
       </div>
 
@@ -81,18 +81,12 @@ export const StaffManager: React.FC = () => {
                     >
                       <option value="Owner">Owner</option>
                       <option value="KitchenStaff">KitchenStaff</option>
-                      <option value="Staff">Staff</option>
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right space-x-1">
                     {u.role === 'KitchenStaff' && (
                       <button onClick={() => navigate('/kitchen')} className="touch-target px-2 py-1 text-cafe-amber hover:bg-cafe-cream rounded-lg inline-flex items-center space-x-1 font-bold">
                         <ExternalLink className="w-3 h-3" /><span>KDS</span>
-                      </button>
-                    )}
-                    {u.role === 'Staff' && (
-                      <button onClick={() => navigate('/staff')} className="touch-target px-2 py-1 text-cafe-accent hover:bg-cafe-cream rounded-lg inline-flex items-center space-x-1 font-bold">
-                        <ExternalLink className="w-3 h-3" /><span>Console</span>
                       </button>
                     )}
                     <button onClick={() => handleResetPassword(id)} className="touch-target p-1 text-cafe-muted hover:text-cafe-amber rounded-lg inline-flex items-center" title="Reset Password">

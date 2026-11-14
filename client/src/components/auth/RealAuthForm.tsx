@@ -11,14 +11,13 @@ export const RealAuthForm: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('Staff');
+  const [role, setRole] = useState<UserRole>('KitchenStaff');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
   const redirectByRole = (userRole: UserRole) => {
     if (userRole === 'Owner') navigate('/owner');
-    else if (userRole === 'KitchenStaff') navigate('/kitchen');
-    else navigate('/staff');
+    else navigate('/kitchen');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,20 +49,20 @@ export const RealAuthForm: React.FC = () => {
       </div>
 
       <button type="button" onClick={handleGuestCustomer} className="w-full touch-target min-h-[44px] py-3 px-4 bg-cafe-deep hover:bg-cafe-espresso text-[#FFF4E6] font-bold rounded-2xl flex items-center justify-between border border-cafe-amber/60 hover:border-cafe-amber shadow-[0_0_15px_rgba(233,149,36,0.15)] transition-all mb-4">
-        <span className="flex items-center space-x-2.5 text-xs"><Smartphone className="w-4 h-4 text-cafe-amber" /><span className="tracking-wide">Customer Access (No Login Required)</span></span>
+        <span className="flex items-center space-x-2.5 text-xs"><Smartphone className="w-4 h-4 text-cafe-amber" /><span className="tracking-wide">Customer Menu</span></span>
         <ArrowRight className="w-4 h-4 text-cafe-amber" />
       </button>
 
       <div className="relative my-3">
         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-cafe-border/20" /></div>
         <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
-          <span className="px-2.5 py-0.5 bg-cafe-deep backdrop-blur-sm text-[#C5B49F] font-bold rounded-full border border-cafe-border/20">Or Staff Sign In / Sign Up</span>
+          <span className="px-2.5 py-0.5 bg-cafe-deep backdrop-blur-sm text-[#C5B49F] font-bold rounded-full border border-cafe-border/20">Or Sign In</span>
         </div>
       </div>
 
       <div className="flex bg-cafe-espresso/90 p-1 rounded-xl mb-3 text-xs border border-cafe-border/20">
         <button type="button" onClick={() => { setMode('login'); setErrorMsg(''); }} className={`flex-1 touch-target min-h-[38px] py-1.5 rounded-lg transition-all ${mode === 'login' ? 'bg-cafe-amber text-white font-bold shadow-sm' : 'text-[#C5B49F] hover:text-[#FFF4E6] font-bold'}`}>Sign In</button>
-        <button type="button" onClick={() => { setMode('register'); setErrorMsg(''); }} className={`flex-1 touch-target min-h-[38px] py-1.5 rounded-lg transition-all ${mode === 'register' ? 'bg-cafe-amber text-white font-bold shadow-sm' : 'text-[#C5B49F] hover:text-[#FFF4E6] font-bold'}`}>Create Real Account</button>
+        <button type="button" onClick={() => { setMode('register'); setErrorMsg(''); }} className={`flex-1 touch-target min-h-[38px] py-1.5 rounded-lg transition-all ${mode === 'register' ? 'bg-cafe-amber text-white font-bold shadow-sm' : 'text-[#C5B49F] hover:text-[#FFF4E6] font-bold'}`}>Sign Up</button>
       </div>
 
       {errorMsg && <div className="mb-3 p-2.5 bg-[#4B3024] border border-[#4B3024] rounded-xl text-xs text-[#FFF4E6] text-center font-bold shadow-sm">{errorMsg}</div>}
@@ -71,12 +70,12 @@ export const RealAuthForm: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-2.5 text-xs">
         {mode === 'register' && (
           <div>
-            <label className="font-bold text-[#FFF4E6] block mb-1">Full Name</label>
+            <label className="font-bold text-[#FFF4E6] block mb-1">Name</label>
             <div className="relative"><input required type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex Smith" className="w-full px-3.5 py-2.5 bg-cafe-espresso/80 border border-cafe-border/25 focus:border-cafe-amber rounded-xl text-[#FFF4E6] placeholder-[#C5B49F]" /><User className="w-4 h-4 text-[#C5B49F] absolute right-3.5 top-1/2 -translate-y-1/2" /></div>
           </div>
         )}
         <div>
-          <label className="font-bold text-[#FFF4E6] block mb-1">Email Address</label>
+          <label className="font-bold text-[#FFF4E6] block mb-1">Email</label>
           <div className="relative"><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="user@cafe.com" className="w-full px-3.5 py-2.5 bg-cafe-espresso/80 border border-cafe-border/25 focus:border-cafe-amber rounded-xl text-[#FFF4E6] placeholder-[#C5B49F]" /><Mail className="w-4 h-4 text-[#C5B49F] absolute right-3.5 top-1/2 -translate-y-1/2" /></div>
         </div>
         <div>
@@ -85,12 +84,12 @@ export const RealAuthForm: React.FC = () => {
         </div>
         {mode === 'register' && (
           <div>
-            <label className="font-bold text-[#FFF4E6] block mb-1">Assigned Role</label>
-            <div className="relative"><select value={role} onChange={(e) => setRole(e.target.value as UserRole)} className="w-full px-3.5 py-2.5 bg-cafe-espresso border border-cafe-border/25 focus:border-cafe-amber rounded-xl text-[#FFF4E6] font-bold"><option value="Staff">Floor Staff</option><option value="KitchenStaff">Kitchen Staff</option><option value="Owner">Cafe Owner / Admin</option></select><Shield className="w-4 h-4 text-[#C5B49F] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" /></div>
+            <label className="font-bold text-[#FFF4E6] block mb-1">Role</label>
+            <div className="relative"><select value={role} onChange={(e) => setRole(e.target.value as UserRole)} className="w-full px-3.5 py-2.5 bg-cafe-espresso border border-cafe-border/25 focus:border-cafe-amber rounded-xl text-[#FFF4E6] font-bold"><option value="KitchenStaff">Kitchen</option><option value="Owner">Owner</option></select><Shield className="w-4 h-4 text-[#C5B49F] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" /></div>
           </div>
         )}
         <button type="submit" disabled={loading} className="w-full touch-target min-h-[44px] py-3 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold rounded-xl flex items-center justify-center space-x-2 shadow-lg border border-cafe-amber/50 transition-all disabled:opacity-50 mt-3">
-          <span>{loading ? 'Processing...' : mode === 'login' ? 'Sign In to Dashboard' : 'Complete Registration'}</span>
+          <span>{loading ? 'Processing...' : mode === 'login' ? 'Sign In' : 'Register'}</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </form>

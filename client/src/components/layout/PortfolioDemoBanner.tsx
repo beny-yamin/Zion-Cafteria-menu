@@ -15,8 +15,7 @@ export const PortfolioDemoBanner: React.FC = () => {
     try {
       const res = await demoLogin(targetRole);
       if (res.role === 'Owner') navigate('/owner');
-      else if (res.role === 'KitchenStaff') navigate('/kitchen');
-      else navigate('/staff');
+      else navigate('/kitchen');
     } catch (e) {
       console.error('Demo switch error', e);
     }
@@ -66,28 +65,19 @@ export const PortfolioDemoBanner: React.FC = () => {
               <span>Kitchen</span>
             </button>
           )}
-          {user.role !== 'Staff' && (
-            <button
-              onClick={() => handleRoleSwitch('Staff')}
-              className="touch-target px-2.5 py-1 rounded-lg bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white border border-cafe-border/30 text-[11px] font-bold flex items-center space-x-1 transition-colors"
-            >
-              <RefreshCw className="w-3 h-3" />
-              <span>Staff</span>
-            </button>
-          )}
           <button
             onClick={() => navigate('/menu?table=1')}
             className="touch-target px-2.5 py-1 rounded-lg bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white border border-cafe-border/30 text-[11px] font-bold flex items-center space-x-1 transition-colors"
           >
             <Smartphone className="w-3 h-3" />
-            <span>Customer View</span>
+            <span>Menu</span>
           </button>
           <button
             onClick={handleExitDemo}
             className="touch-target px-2.5 py-1 rounded-lg bg-[#4B3024] hover:bg-[#3A251B] text-[#FFF4E6] border border-[#4B3024] text-[11px] font-bold flex items-center space-x-1 ml-1 transition-colors shadow-sm"
           >
             <LogOut className="w-3 h-3" />
-            <span>Exit Demo</span>
+            <span>Exit</span>
           </button>
         </div>
       </div>

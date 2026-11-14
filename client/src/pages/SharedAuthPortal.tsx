@@ -16,7 +16,6 @@ export const SharedAuthPortal: React.FC = () => {
     if (user && !user.isDemo) {
       if (user.role === 'Owner') navigate('/owner');
       else if (user.role === 'KitchenStaff') navigate('/kitchen');
-      else navigate('/staff');
     }
   }, [user, navigate]);
 

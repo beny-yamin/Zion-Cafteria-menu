@@ -14,7 +14,7 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ isOpen, onCl
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('Staff');
+  const [role, setRole] = useState<UserRole>('KitchenStaff');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -49,7 +49,7 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ isOpen, onCl
         <div className="flex items-center justify-between pb-3 border-b border-cafe-border">
           <div className="flex items-center space-x-2">
             <UserPlus className="w-5 h-5 text-cafe-amber" />
-            <h3 className="font-bold text-sm text-cafe-text">Add New Team Member</h3>
+            <h3 className="font-bold text-sm text-cafe-text">Add User</h3>
           </div>
           <button onClick={onClose} className="touch-target w-9 h-9 rounded-full flex items-center justify-center text-cafe-muted hover:bg-cafe-cream">
             <X className="w-5 h-5" />
@@ -60,11 +60,11 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ isOpen, onCl
 
         <form onSubmit={handleSubmit} className="space-y-3 mt-4 text-xs">
           <div>
-            <label className="font-bold text-cafe-text block mb-1">Full Name</label>
-            <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Alex Smith" className="w-full px-3 py-2 border border-cafe-border bg-cafe-cream text-cafe-text rounded-xl font-medium focus:outline-none focus:border-cafe-amber" />
+            <label className="font-bold text-cafe-text block mb-1">Name</label>
+            <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex Smith" className="w-full px-3 py-2 border border-cafe-border bg-cafe-cream text-cafe-text rounded-xl font-medium focus:outline-none focus:border-cafe-amber" />
           </div>
           <div>
-            <label className="font-bold text-cafe-text block mb-1">Email Address</label>
+            <label className="font-bold text-cafe-text block mb-1">Email</label>
             <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="alex@cafe.com" className="w-full px-3 py-2 border border-cafe-border bg-cafe-cream text-cafe-text rounded-xl font-medium focus:outline-none focus:border-cafe-amber" />
           </div>
           <div>
@@ -72,15 +72,14 @@ export const CreateStaffModal: React.FC<CreateStaffModalProps> = ({ isOpen, onCl
             <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 6 characters" className="w-full px-3 py-2 border border-cafe-border bg-cafe-cream text-cafe-text rounded-xl font-medium focus:outline-none focus:border-cafe-amber" />
           </div>
           <div>
-            <label className="font-bold text-cafe-text block mb-1">System Role</label>
+            <label className="font-bold text-cafe-text block mb-1">Role</label>
             <select value={role} onChange={(e) => setRole(e.target.value as UserRole)} className="w-full px-3 py-2 border border-cafe-border rounded-xl bg-cafe-cream text-cafe-text font-bold focus:outline-none focus:border-cafe-amber">
-              <option value="KitchenStaff">Kitchen Staff (KDS Screen & Stock)</option>
-              <option value="Staff">Floor Staff (Table Overview & Orders)</option>
-              <option value="Owner">Co-Owner (Full Admin Access)</option>
+              <option value="KitchenStaff">Kitchen</option>
+              <option value="Owner">Owner</option>
             </select>
           </div>
           <button type="submit" disabled={isSubmitting} className="w-full touch-target min-h-[44px] py-3 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold rounded-xl mt-4 shadow-sm transition-colors disabled:opacity-50">
-            {isSubmitting ? 'Creating Firebase Account...' : 'Create Account'}
+            {isSubmitting ? 'Creating...' : 'Create'}
           </button>
         </form>
       </div>

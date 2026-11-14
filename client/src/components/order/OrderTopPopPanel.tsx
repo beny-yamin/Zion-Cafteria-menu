@@ -46,8 +46,8 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
               <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-black text-cafe-text">Review & Complete Order</h2>
-              <p className="text-xs text-cafe-muted">Review items and proceed to payment</p>
+              <h2 className="text-base font-black text-cafe-text">Review Order</h2>
+              <p className="text-xs text-cafe-muted">Review items</p>
             </div>
           </div>
           <button onClick={onClose} disabled={isProcessing} className="touch-target w-9 h-9 rounded-full flex items-center justify-center text-cafe-muted hover:text-cafe-text hover:bg-cafe-cream" aria-label="Close order panel">
@@ -58,7 +58,7 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
         <div className="p-6 space-y-5">
           <div className="max-h-64 overflow-y-auto divide-y divide-cafe-border/50 pr-1">
             {items.length === 0 ? (
-              <p className="text-xs text-cafe-muted text-center py-6">Your cart is empty.</p>
+              <p className="text-xs text-cafe-muted text-center py-6">Cart empty.</p>
             ) : (
               items.map((item) => (
                 <CartItemRow key={item.menuItem._id} item={item} onUpdateQuantity={onUpdateQuantity} onRemove={onRemove} />
@@ -72,11 +72,11 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
               <span className="font-bold text-cafe-text">{subtotal.toFixed(2)} ETB</span>
             </div>
             <div className="flex justify-between">
-              <span>VAT & Service (15%):</span>
+              <span>Tax (15%):</span>
               <span className="font-bold text-cafe-text">{tax.toFixed(2)} ETB</span>
             </div>
             <div className="flex justify-between text-sm font-black text-cafe-text pt-2 border-t border-cafe-border">
-              <span>Pre-Payment Total:</span>
+              <span>Total:</span>
               <span className="text-cafe-amber text-base">{totalAmount.toFixed(2)} ETB</span>
             </div>
           </div>
@@ -88,18 +88,18 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Connecting to Chapa...</span>
+                  <span>Connecting...</span>
                 </>
               ) : (
                 <>
                   <CreditCard className="w-5 h-5" />
-                  <span>Proceed to Payment ({totalAmount.toFixed(2)} ETB)</span>
+                  <span>Pay {totalAmount.toFixed(2)} ETB</span>
                 </>
               )}
             </button>
             <div className="flex items-center justify-center space-x-1.5 text-[11px] text-cafe-muted">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Chapa TEST MODE · Zero installation required</span>
+              <span>Secure Payment</span>
             </div>
           </div>
         </div>

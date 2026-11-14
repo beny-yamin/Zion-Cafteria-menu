@@ -80,7 +80,7 @@ export interface CartItem {
   specialInstructions: string;
 }
 
-export type UserRole = 'Owner' | 'KitchenStaff' | 'Staff';
+export type UserRole = 'Owner' | 'KitchenStaff';
 
 export interface AdminUser {
   id: string;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Smartphone, LayoutDashboard, ChefHat, Utensils, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Smartphone, LayoutDashboard, ChefHat, ArrowUpRight, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.js';
 import { UserRole } from '../../types/index.js';
 
@@ -34,28 +34,28 @@ export const DemoRoleShowcase: React.FC = () => {
           Click any role to test features with safe sample data. Personal data and admin rights stay isolated.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {/* 1. Customer Experience */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* 1. Customer */}
           <div className="bg-cafe-espresso/80 border border-cafe-amber/40 rounded-2xl p-4 flex flex-col justify-between space-y-3 backdrop-blur-md">
             <div className="flex items-center space-x-2 text-cafe-amber font-bold text-xs">
               <Smartphone className="w-4 h-4 text-cafe-amber" />
-              <span className="text-[#FFF4E6]">1. Customer Experience</span>
+              <span className="text-[#FFF4E6]">Customer</span>
             </div>
             <button
               type="button"
               onClick={() => navigate('/menu?table=1')}
               className="touch-target min-h-[44px] w-full py-2.5 px-3 bg-cafe-deep hover:bg-cafe-amber border border-cafe-amber/50 hover:border-cafe-amber text-[#FFF4E6] hover:text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition-all"
             >
-              <span>Open Customer Menu</span>
+              <span>Menu</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-cafe-amber group-hover:text-white" />
             </button>
           </div>
 
-          {/* 2. Owner Dashboard */}
+          {/* 2. Owner */}
           <div className="bg-cafe-espresso/80 border border-cafe-border/30 rounded-2xl p-4 flex flex-col justify-between space-y-3 backdrop-blur-md">
             <div className="flex items-center space-x-2 text-[#FFF4E6] font-bold text-xs">
               <LayoutDashboard className="w-4 h-4 text-cafe-amber" />
-              <span className="text-[#FFF4E6]">2. Owner Dashboard</span>
+              <span className="text-[#FFF4E6]">Owner</span>
             </div>
             <button
               type="button"
@@ -63,16 +63,16 @@ export const DemoRoleShowcase: React.FC = () => {
               onClick={() => handleDemoLaunch('Owner', '/owner')}
               className="touch-target min-h-[44px] w-full py-2.5 px-3 bg-cafe-deep hover:bg-cafe-amber border border-cafe-border/40 hover:border-cafe-amber text-[#FFF4E6] hover:text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition-all disabled:opacity-50"
             >
-              <span>{loadingRole === 'Owner' ? 'Launching...' : 'Explore as Owner'}</span>
+              <span>{loadingRole === 'Owner' ? 'Launching...' : 'Owner'}</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-cafe-amber" />
             </button>
           </div>
 
-          {/* 3. Kitchen Display (KDS) */}
+          {/* 3. Kitchen */}
           <div className="bg-cafe-espresso/80 border border-cafe-amber/40 rounded-2xl p-4 flex flex-col justify-between space-y-3 backdrop-blur-md">
             <div className="flex items-center space-x-2 text-cafe-amber font-bold text-xs">
               <ChefHat className="w-4 h-4 text-cafe-amber" />
-              <span className="text-[#FFF4E6]">3. Kitchen Display (KDS)</span>
+              <span className="text-[#FFF4E6]">Kitchen</span>
             </div>
             <button
               type="button"
@@ -80,24 +80,7 @@ export const DemoRoleShowcase: React.FC = () => {
               onClick={() => handleDemoLaunch('KitchenStaff', '/kitchen')}
               className="touch-target min-h-[44px] w-full py-2.5 px-3 bg-cafe-deep hover:bg-cafe-amber border border-cafe-amber/50 hover:border-cafe-amber text-[#FFF4E6] hover:text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition-all disabled:opacity-50"
             >
-              <span>{loadingRole === 'KitchenStaff' ? 'Launching...' : 'Explore as Kitchen'}</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-cafe-amber" />
-            </button>
-          </div>
-
-          {/* 4. Floor Staff Console */}
-          <div className="bg-cafe-espresso/80 border border-cafe-border/30 rounded-2xl p-4 flex flex-col justify-between space-y-3 backdrop-blur-md">
-            <div className="flex items-center space-x-2 text-[#FFF4E6] font-bold text-xs">
-              <Utensils className="w-4 h-4 text-cafe-amber" />
-              <span className="text-[#FFF4E6]">4. Floor Staff Console</span>
-            </div>
-            <button
-              type="button"
-              disabled={loadingRole === 'Staff'}
-              onClick={() => handleDemoLaunch('Staff', '/staff')}
-              className="touch-target min-h-[44px] w-full py-2.5 px-3 bg-cafe-deep hover:bg-cafe-amber border border-cafe-border/40 hover:border-cafe-amber text-[#FFF4E6] hover:text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 shadow transition-all disabled:opacity-50"
-            >
-              <span>{loadingRole === 'Staff' ? 'Launching...' : 'Explore as Staff'}</span>
+              <span>{loadingRole === 'KitchenStaff' ? 'Launching...' : 'Kitchen'}</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-cafe-amber" />
             </button>
           </div>

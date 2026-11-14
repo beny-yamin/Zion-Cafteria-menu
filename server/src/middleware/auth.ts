@@ -59,7 +59,7 @@ export const requireAuth = async (
   if (getApps().length > 0) {
     try {
       const decodedToken = await getAuth().verifyIdToken(token);
-      let role: UserRole = 'Staff';
+      let role: UserRole = 'KitchenStaff';
 
       // Check DB for existing role mapping
       const dbUser = await AdminUser.findOne({

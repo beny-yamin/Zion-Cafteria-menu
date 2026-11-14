@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-export type UserRole = 'Owner' | 'KitchenStaff' | 'Staff';
+export type UserRole = 'Owner' | 'KitchenStaff';
 
 export interface IAdminUser extends Document {
   firebaseUid?: string;
@@ -42,8 +42,8 @@ const AdminUserSchema = new Schema<IAdminUser>(
     role: {
       type: String,
       required: true,
-      enum: ['Owner', 'KitchenStaff', 'Staff'],
-      default: 'Staff',
+      enum: ['Owner', 'KitchenStaff'],
+      default: 'KitchenStaff',
     },
     isDemo: {
       type: Boolean,

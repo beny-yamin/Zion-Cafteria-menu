@@ -243,14 +243,13 @@ const seedInitialData = async () => {
     const seedAccounts = [
       { name: 'Master Owner', email: 'owner@cafe.com', pass: 'owner1234', role: 'Owner' as const, isProtected: true, isDemo: false },
       { name: 'Kitchen Head', email: 'kitchen@cafe.com', pass: 'kitchen1234', role: 'KitchenStaff' as const, isProtected: false, isDemo: false },
-      { name: 'Floor Staff', email: 'staff@cafe.com', pass: 'staff1234', role: 'Staff' as const, isProtected: false, isDemo: false },
       { name: 'Demo Cafe Owner', email: 'demo-owner@cafe.com', pass: 'demo1234', role: 'Owner' as const, isProtected: false, isDemo: true },
       { name: 'Demo Kitchen Staff', email: 'demo-kitchen@cafe.com', pass: 'demo1234', role: 'KitchenStaff' as const, isProtected: false, isDemo: true },
-      { name: 'Demo Floor Staff', email: 'demo-staff@cafe.com', pass: 'demo1234', role: 'Staff' as const, isProtected: false, isDemo: true },
     ];
 
-    // Clean up any previously seeded customer accounts
-    await AdminUser.deleteMany({ email: 'customer@cafe.com' });
+    // Clean up any legacy Floor Staff or customer accounts from database
+    await AdminUser.deleteMany({ role: { $nin: ['Owner', 'KitchenStaff'] } as any });
+    await AdminUser.deleteMany({ email: { $in: ['staff@cafe.com', 'demo-staff@cafe.com', 'customer@cafe.com'] } });
 
     for (const acc of seedAccounts) {
       const passwordHash = await bcrypt.hash(acc.pass, 10);

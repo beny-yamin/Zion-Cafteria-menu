@@ -28,7 +28,7 @@ export const FloatingOrderNotification: React.FC<FloatingOrderNotificationProps>
           </div>
           <div>
             <p className="text-[11px] font-bold text-cafe-muted uppercase tracking-wider">
-              {itemCount} {itemCount === 1 ? 'item selected' : 'items selected'}
+              {itemCount} {itemCount === 1 ? 'item' : 'items'}
             </p>
             <p className="text-sm font-black text-cafe-text">
               Total: <span className="text-cafe-amber">{totalAmount.toFixed(2)} ETB</span>

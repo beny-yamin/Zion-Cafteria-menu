@@ -66,28 +66,28 @@ export const KitchenDisplayPage: React.FC = () => {
             <ChefHat className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-black text-lg tracking-wide uppercase text-[#FFF4E6]">Zion Kitchen Display</h1>
-            <p className="text-xs text-[#C5B49F]">{orders.length} verified paid orders in queue</p>
+            <h1 className="font-black text-lg tracking-wide uppercase text-[#FFF4E6]">Kitchen Display</h1>
+            <p className="text-xs text-[#C5B49F]">{orders.length} orders</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
           <ThemeSwitcher />
           {user?.role === 'Owner' && (
             <button onClick={() => navigate('/owner')} className="touch-target px-3 py-2 bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white text-xs font-bold rounded-xl flex items-center space-x-1.5 border border-cafe-border/30 transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5" /><span>Owner Central</span>
+              <ArrowLeft className="w-3.5 h-3.5" /><span>Owner</span>
             </button>
           )}
           <button onClick={() => setIsStockDrawerOpen(true)} className="touch-target px-3.5 py-2 bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white text-xs font-bold rounded-xl flex items-center space-x-1.5 border border-cafe-border/30 transition-colors">
-            <Package className="w-4 h-4 text-cafe-amber" /><span>Stock Switcher</span>
+            <Package className="w-4 h-4 text-cafe-amber" /><span>Stock</span>
           </button>
-          <button onClick={handleExit} className="touch-target w-10 h-10 rounded-xl bg-cafe-espresso hover:bg-[#4B3024] text-[#C5B49F] hover:text-[#FFF4E6] flex items-center justify-center border border-cafe-border/20 transition-colors" title="Exit / Log Out">
+          <button onClick={handleExit} className="touch-target w-10 h-10 rounded-xl bg-cafe-espresso hover:bg-[#4B3024] text-[#C5B49F] hover:text-[#FFF4E6] flex items-center justify-center border border-cafe-border/20 transition-colors" title="Exit">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
       </header>
       <main className="flex-1 p-6 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-x-auto">
         <div className="flex flex-col">
-          <h2 className="font-bold text-sm text-cafe-amber uppercase tracking-wider pb-2 mb-3 border-b-2 border-cafe-amber">New Paid ({accepted.length})</h2>
+          <h2 className="font-bold text-sm text-cafe-amber uppercase tracking-wider pb-2 mb-3 border-b-2 border-cafe-amber">New ({accepted.length})</h2>
           <div className="space-y-4 overflow-y-auto flex-1">{accepted.map((o) => <OrderTicketCard key={o._id} order={o} onUpdateStatus={handleUpdateStatus} />)}</div>
         </div>
         <div className="flex flex-col">
@@ -95,7 +95,7 @@ export const KitchenDisplayPage: React.FC = () => {
           <div className="space-y-4 overflow-y-auto flex-1">{preparing.map((o) => <OrderTicketCard key={o._id} order={o} onUpdateStatus={handleUpdateStatus} />)}</div>
         </div>
         <div className="flex flex-col">
-          <h2 className="font-bold text-sm text-emerald-400 uppercase tracking-wider pb-2 mb-3 border-b-2 border-emerald-500">Ready for Pickup ({ready.length})</h2>
+          <h2 className="font-bold text-sm text-emerald-400 uppercase tracking-wider pb-2 mb-3 border-b-2 border-emerald-500">Ready ({ready.length})</h2>
           <div className="space-y-4 overflow-y-auto flex-1">{ready.map((o) => <OrderTicketCard key={o._id} order={o} onUpdateStatus={handleUpdateStatus} />)}</div>
         </div>
       </main>

@@ -28,11 +28,11 @@ export const CustomerHeader: React.FC<CustomerHeaderProps> = ({
             <h1 className="font-black text-lg text-cafe-text leading-tight tracking-tight">{cafeName}</h1>
             <div className="flex items-center space-x-2 text-xs text-cafe-muted">
               <span className="font-semibold text-cafe-amber bg-cafe-amber/10 px-2 py-0.5 rounded-full border border-cafe-amber/30">
-                Digital Menu
+                Menu
               </span>
               <span className="flex items-center">
                 <Clock className="w-3 h-3 mr-1 text-cafe-muted" />
-                ~{avgPrepTime} min wait
+                ~{avgPrepTime} min
               </span>
             </div>
           </div>
@@ -42,7 +42,7 @@ export const CustomerHeader: React.FC<CustomerHeaderProps> = ({
           <ThemeSwitcher />
           <button
             onClick={onOpenCart}
-            aria-label="View Cart"
+            aria-label="Cart"
             className="relative touch-target w-12 h-12 rounded-full bg-cafe-cream text-cafe-text border border-cafe-border flex items-center justify-center hover:bg-cafe-amber hover:text-white transition-all shadow-sm focus:ring-2 focus:ring-cafe-amber"
           >
             <ShoppingBag className="w-5 h-5" />

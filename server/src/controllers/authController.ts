@@ -82,8 +82,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const validRoles: UserRole[] = ['Owner', 'KitchenStaff', 'Staff'];
-    const assignedRole: UserRole = validRoles.includes(role) ? role : 'Staff';
+    const validRoles: UserRole[] = ['Owner', 'KitchenStaff'];
+    const assignedRole: UserRole = validRoles.includes(role) ? role : 'KitchenStaff';
 
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = await AdminUser.create({
@@ -130,13 +130,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const demoLogin = async (req: Request, res: Response): Promise<void> => {
   try {
     const { role = 'Owner' } = req.body;
-    const validRoles: UserRole[] = ['Owner', 'KitchenStaff', 'Staff'];
+    const validRoles: UserRole[] = ['Owner', 'KitchenStaff'];
     const targetRole: UserRole = validRoles.includes(role) ? role : 'Owner';
 
     const demoProfiles: Record<UserRole, { name: string; email: string }> = {
       Owner: { name: 'Demo Cafe Owner', email: 'demo-owner@cafe.com' },
       KitchenStaff: { name: 'Demo Kitchen Staff', email: 'demo-kitchen@cafe.com' },
-      Staff: { name: 'Demo Floor Staff', email: 'demo-staff@cafe.com' },
     };
 
     const profile = demoProfiles[targetRole];
@@ -218,7 +217,7 @@ export const firebaseSync = async (req: Request, res: Response): Promise<void> =
         name: name || verifiedEmail.split('@')[0],
         email: verifiedEmail,
         passwordHash: defaultHash,
-        role: (role as UserRole) || 'Staff',
+        role: (role as UserRole) || 'KitchenStaff',
         isDemo: false,
         isProtected: false,
       });
@@ -289,17 +288,9 @@ export const getAllUsers = async (req: AuthRequest, res: Response): Promise<void
         },
         {
           _id: 'demo-staff-2',
-          name: 'Sarah Connor (Sample Floor Lead)',
-          email: 'floor.sample@cafe.com',
-          role: 'Staff',
-          isDemo: true,
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: 'demo-staff-3',
-          name: 'Liam Davis (Sample Barista)',
-          email: 'barista.sample@cafe.com',
-          role: 'Staff',
+          name: 'Elena Rostova (Sample Sous Chef)',
+          email: 'sous.sample@cafe.com',
+          role: 'KitchenStaff',
           isDemo: true,
           createdAt: new Date().toISOString(),
         },
@@ -386,7 +377,7 @@ export const updateUserRole = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    const validRoles: UserRole[] = ['Owner', 'KitchenStaff', 'Staff'];
+    const validRoles: UserRole[] = ['Owner', 'KitchenStaff'];
     if (!validRoles.includes(role)) {
       res.status(400).json({ success: false, message: 'Invalid role specified.' });
       return;

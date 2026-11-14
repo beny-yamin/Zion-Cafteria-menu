@@ -40,21 +40,21 @@ export const PaymentVerifyPage: React.FC = () => {
         {isLoading && (
           <div className="py-12 space-y-4">
             <Loader2 className="w-12 h-12 text-cafe-amber animate-spin mx-auto" />
-            <h2 className="text-lg font-bold text-cafe-text">Verifying Payment with Chapa...</h2>
-            <p className="text-xs text-cafe-muted">Please wait while your payment is securely confirmed.</p>
+            <h2 className="text-lg font-bold text-cafe-text">Verifying...</h2>
+            <p className="text-xs text-cafe-muted">Confirming payment.</p>
           </div>
         )}
 
         {!isLoading && error && (
           <div className="py-6 space-y-4">
             <XCircle className="w-16 h-16 text-[#4B3024] mx-auto" />
-            <h2 className="text-xl font-black text-cafe-text">Payment Not Completed</h2>
+            <h2 className="text-xl font-black text-cafe-text">Failed</h2>
             <p className="text-xs text-cafe-muted px-4">{error}</p>
             <button
               onClick={() => navigate('/menu')}
               className="touch-target px-6 py-3 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all inline-flex items-center space-x-2"
             >
-              <span>Return to Menu</span>
+              <span>Back</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -67,21 +67,21 @@ export const PaymentVerifyPage: React.FC = () => {
             </div>
 
             <div>
-              <h2 className="text-2xl font-black text-emerald-600 tracking-tight">✓ Payment Successful</h2>
+              <h2 className="text-2xl font-black text-emerald-600 tracking-tight">✓ Paid</h2>
               <p className="text-xs text-cafe-muted mt-1 font-medium">
-                &ldquo;Your order has been sent to the cafeteria.&rdquo;
+                Order sent.
               </p>
             </div>
 
             <div className="bg-cafe-cream/80 border border-cafe-border rounded-2xl p-5 text-left space-y-2.5">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-cafe-muted font-bold">Order Number</span>
+                <span className="text-cafe-muted font-bold">Order</span>
                 <span className="font-black text-cafe-text text-sm">#{verifiedOrder.orderNumber || '1234'}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-cafe-muted font-bold">Location</span>
+                <span className="text-cafe-muted font-bold">Table</span>
                 <span className="font-bold text-cafe-text">
-                  {verifiedOrder.tableNumber > 0 ? `Table ${verifiedOrder.tableNumber}` : 'General Cafeteria'}
+                  {verifiedOrder.tableNumber > 0 ? `Table ${verifiedOrder.tableNumber}` : 'Cafeteria'}
                 </span>
               </div>
               <div className="flex justify-between items-center text-xs pt-2 border-t border-cafe-border">
@@ -100,7 +100,7 @@ export const PaymentVerifyPage: React.FC = () => {
               onClick={() => navigate(verifiedOrder.tableNumber > 0 ? `/?m=t_${verifiedOrder.tableNumber}` : '/')}
               className="w-full touch-target min-h-[44px] py-3.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center space-x-2"
             >
-              <span>Back to Cafeteria Menu</span>
+              <span>Back</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

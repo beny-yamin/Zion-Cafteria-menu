@@ -24,7 +24,7 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, onAddToCart })
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-cafe-muted text-sm font-medium">
-            No Photo Available
+            No Photo
           </div>
         )}
 
