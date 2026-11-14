@@ -108,6 +108,15 @@ export const getActiveOrders = async (_req: Request, res: Response): Promise<voi
 
 export const updateOrderStatus = async (req: Request, res: Response): Promise<void> => {
   try {
+    const userRole = (req as any).user?.role;
+    if (userRole !== 'KitchenStaff') {
+      res.status(403).json({
+        success: false,
+        message: 'Forbidden: Preparation statuses belong exclusively to the Kitchen role.',
+      });
+      return;
+    }
+
     const { id } = req.params;
     const { orderStatus } = req.body;
 

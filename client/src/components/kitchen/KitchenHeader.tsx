@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChefHat, Package, LogOut, ArrowLeft } from 'lucide-react';
+import { ChefHat, Package, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcher } from '../layout/ThemeSwitcher.js';
 import { useAuth } from '../../context/AuthContext.js';
@@ -53,15 +53,6 @@ export const KitchenHeader: React.FC<KitchenHeaderProps> = ({
           {!hasTopNav && (
             <>
               <ThemeSwitcher compact={true} />
-              {user?.role === 'Owner' && (
-                <button
-                  onClick={() => navigate('/owner')}
-                  className="touch-target px-2 sm:px-3 py-1.5 bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border/30 transition-colors"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span className="hidden xs:inline">Owner</span>
-                </button>
-              )}
               <button
                 onClick={onExit}
                 className="touch-target w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-cafe-espresso hover:bg-[#4B3024] text-[#C5B49F] hover:text-[#FFF4E6] flex items-center justify-center border border-cafe-border/20 transition-colors"

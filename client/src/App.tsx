@@ -63,7 +63,7 @@ const MainAppContent: React.FC = () => {
         <Route
           path="/kitchen"
           element={
-            <ProtectedRoute allowedRoles={['Owner', 'KitchenStaff']}>
+            <ProtectedRoute allowedRoles={['KitchenStaff']}>
               <KitchenDisplayPage />
             </ProtectedRoute>
           }

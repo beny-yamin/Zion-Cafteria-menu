@@ -26,6 +26,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
 
   if (allowedRoles && role && !allowedRoles.includes(role)) {
     // Redirect unauthorized roles to their respective dashboards
+    if (role === 'Owner') {
+      return <Navigate to="/owner" replace />;
+    }
     if (role === 'KitchenStaff') {
       return <Navigate to="/kitchen" replace />;
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, KeyRound, Trash2, ExternalLink } from 'lucide-react';
+import { UserPlus, KeyRound, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api.js';
 import { AdminUser, UserRole } from '../../types/index.js';
@@ -84,11 +84,6 @@ export const StaffManager: React.FC = () => {
                     </select>
                   </td>
                   <td className="px-4 py-3 text-right space-x-1">
-                    {u.role === 'KitchenStaff' && (
-                      <button onClick={() => navigate('/kitchen')} className="touch-target px-2 py-1 text-cafe-amber hover:bg-cafe-cream rounded-lg inline-flex items-center space-x-1 font-bold">
-                        <ExternalLink className="w-3 h-3" /><span>KDS</span>
-                      </button>
-                    )}
                     <button onClick={() => handleResetPassword(id)} className="touch-target p-1 text-cafe-muted hover:text-cafe-amber rounded-lg inline-flex items-center" title="Reset Password">
                       <KeyRound className="w-3.5 h-3.5" />
                     </button>

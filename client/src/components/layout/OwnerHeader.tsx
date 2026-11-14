@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, QrCode, Users, ChefHat, Plus, LogOut } from 'lucide-react';
+import { LayoutDashboard, QrCode, Users, Plus, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcher } from './ThemeSwitcher.js';
 import { useAuth } from '../../context/AuthContext.js';
@@ -76,14 +76,6 @@ export const OwnerHeader: React.FC<OwnerHeaderProps> = ({
           {!hasTopNav && (
             <>
               <ThemeSwitcher compact={true} />
-              <button
-                onClick={() => navigate('/kitchen')}
-                className="touch-target px-2.5 py-1.5 bg-cafe-card hover:bg-cafe-cream text-cafe-text text-xs font-bold rounded-xl flex items-center space-x-1 border border-cafe-border transition-colors"
-                title="Kitchen"
-              >
-                <ChefHat className="w-3.5 h-3.5 text-cafe-amber" />
-                <span className="hidden xs:inline">Kitchen</span>
-              </button>
               <button
                 onClick={onExit}
                 className="touch-target w-8 h-8 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:border-[#4B3024] flex items-center justify-center transition-colors"
