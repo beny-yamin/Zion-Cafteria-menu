@@ -75,33 +75,33 @@ export const TableQrManager: React.FC<TableQrManagerProps> = ({ tables, onTables
   };
 
   return (
-    <div className="space-y-6 transition-colors">
-      <div className="bg-cafe-card rounded-2xl border border-cafe-border p-5 shadow-sm flex flex-wrap items-center justify-between gap-4 print:hidden">
+    <div className="space-y-5 transition-colors">
+      <div className="bg-cafe-card rounded-2xl border border-cafe-border p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 print:hidden">
         <div>
           <h3 className="font-bold text-cafe-text text-sm flex items-center space-x-2">
             <QrCode className="w-4 h-4 text-cafe-amber" />
-            <span>In-Dashboard QR Fleet Manager</span>
+            <span>QR Fleet Manager</span>
           </h3>
-          <p className="text-xs text-cafe-muted">Generate, download, print tent cards, or deactivate table & general cafeteria QRs.</p>
+          <p className="text-xs text-cafe-muted">Generate, download, or print cafeteria QR codes.</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button onClick={() => setIsCreateModalOpen(true)} className="touch-target px-3 py-2 bg-cafe-amber hover:bg-cafe-amber-hover text-white text-xs font-bold rounded-xl flex items-center space-x-1.5 shadow-sm">
-            <Plus className="w-3.5 h-3.5" /><span>New QR Code</span>
+            <Plus className="w-3.5 h-3.5" /><span>New QR</span>
           </button>
           <div className="flex items-center space-x-1 bg-cafe-cream border border-cafe-border rounded-xl px-2 py-1">
-            <input type="number" min="1" max="100" value={totalCount} onChange={(e) => setTotalCount(e.target.value)} className="w-12 bg-transparent text-xs font-bold text-cafe-text text-center focus:outline-none" />
+            <input type="number" min="1" max="100" value={totalCount} onChange={(e) => setTotalCount(e.target.value)} className="w-10 bg-transparent text-xs font-bold text-cafe-text text-center focus:outline-none" />
             <button onClick={handleBatchGenerate} disabled={isGenerating} className="px-2 py-1 bg-cafe-card hover:bg-cafe-border text-cafe-text text-[11px] font-bold rounded-lg flex items-center space-x-1 border border-cafe-border">
-              <RefreshCw className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} /><span>Batch Fleet</span>
+              <RefreshCw className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} /><span>Batch</span>
             </button>
           </div>
           <button onClick={() => window.print()} className="touch-target px-3 py-2 bg-cafe-deep hover:bg-cafe-espresso text-[#FFF4E6] text-xs font-bold rounded-xl flex items-center space-x-1.5 shadow-sm">
-            <Printer className="w-3.5 h-3.5 text-cafe-amber" /><span>Print Tent Cards</span>
+            <Printer className="w-3.5 h-3.5 text-cafe-amber" /><span>Print</span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 print:grid-cols-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 print:grid-cols-2">
         {tables.map((table) => (
           <TableQrCard key={table._id} table={table} onPreview={setPreviewTable} onDownload={handleDownload} onRegenerate={handleRegenerate} onToggleStatus={handleToggleStatus} onDelete={handleDelete} isActionLoading={isActionLoading} />
         ))}

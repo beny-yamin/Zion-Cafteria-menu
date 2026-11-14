@@ -42,7 +42,7 @@ export const StaffManager: React.FC = () => {
 
   return (
     <div className="space-y-4 transition-colors">
-      <div className="bg-cafe-card rounded-2xl border border-cafe-border p-4 shadow-sm flex items-center justify-between">
+      <div className="bg-cafe-card rounded-2xl border border-cafe-border p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="font-bold text-cafe-text text-sm">Team Accounts</h3>
           <p className="text-xs text-cafe-muted">Manage team member accounts</p>
@@ -56,8 +56,8 @@ export const StaffManager: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-cafe-card rounded-2xl border border-cafe-border shadow-sm overflow-hidden">
-        <table className="w-full text-left text-xs">
+      <div className="bg-cafe-card rounded-2xl border border-cafe-border shadow-sm overflow-x-auto scrollbar-none">
+        <table className="min-w-full text-left text-xs whitespace-nowrap">
           <thead className="bg-cafe-cream border-b border-cafe-border text-cafe-muted uppercase tracking-wider font-bold">
             <tr>
               <th className="px-4 py-3">User</th>

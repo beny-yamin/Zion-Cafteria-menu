@@ -20,12 +20,12 @@ export const StockToggleDrawer: React.FC<StockToggleDrawerProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
       <div className="absolute inset-0 bg-cafe-deep/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
         <div className="w-screen max-w-md bg-cafe-card text-cafe-text shadow-2xl flex flex-col border-l border-cafe-border transition-colors">
-          <div className="px-5 py-4 border-b border-cafe-border flex items-center justify-between">
+          <div className="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-cafe-border flex items-center justify-between">
             <div>
-              <h2 className="text-base font-bold text-cafe-text">Kitchen Stock Switcher</h2>
-              <p className="text-xs text-cafe-muted">Toggle sold-out items instantly</p>
+              <h2 className="text-base font-bold text-cafe-text">Kitchen Stock</h2>
+              <p className="text-xs text-cafe-muted">Toggle item availability</p>
             </div>
             <button
               onClick={onClose}
@@ -35,16 +35,16 @@ export const StockToggleDrawer: React.FC<StockToggleDrawerProps> = ({
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-5 py-3 divide-y divide-cafe-border/50">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-3 divide-y divide-cafe-border/50">
             {items.map((item) => (
-              <div key={item._id} className="py-3 flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-sm text-cafe-text">{item.name}</h4>
+              <div key={item._id} className="py-3 flex items-center justify-between gap-2.5">
+                <div className="min-w-0 pr-1">
+                  <h4 className="font-bold text-sm text-cafe-text truncate">{item.name}</h4>
                   <span className="text-xs text-cafe-muted font-semibold">{item.category}</span>
                 </div>
                 <button
                   onClick={() => onToggleStock(item._id, item.isAvailable)}
-                  className={`touch-target px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-colors ${
+                  className={`touch-target px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 transition-colors shrink-0 ${
                     item.isAvailable
                       ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-900/30'
                       : 'bg-[#4B3024] text-[#FFF4E6] border border-[#4B3024] hover:bg-[#3A251B]'

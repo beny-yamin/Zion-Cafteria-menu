@@ -38,9 +38,9 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
   const handlePay = () => onProceedToPayment(name.trim() || undefined, email.trim() || undefined);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-cafe-deep/65 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-start">
-      <div className="w-full max-w-2xl bg-cafe-card text-cafe-text border-2 border-cafe-border rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-6 duration-300 mt-2 sm:mt-6 transition-colors">
-        <div className="px-6 py-4 border-b border-cafe-border flex items-center justify-between bg-cafe-cream/40">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-cafe-deep/65 backdrop-blur-sm p-2 sm:p-6 flex justify-center items-start">
+      <div className="w-full max-w-2xl bg-cafe-card text-cafe-text border-2 border-cafe-border rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-6 duration-300 mt-1 sm:mt-6 transition-colors">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-cafe-border flex items-center justify-between bg-cafe-cream/40">
           <div className="flex items-center space-x-2.5">
             <div className="w-9 h-9 rounded-xl bg-cafe-amber/15 text-cafe-amber flex items-center justify-center border border-cafe-amber/30">
               <ShoppingBag className="w-5 h-5" />
@@ -55,7 +55,7 @@ export const OrderTopPopPanel: React.FC<OrderTopPopPanelProps> = ({
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
           <div className="max-h-64 overflow-y-auto divide-y divide-cafe-border/50 pr-1">
             {items.length === 0 ? (
               <p className="text-xs text-cafe-muted text-center py-6">Cart empty.</p>

@@ -62,36 +62,36 @@ export const OrderTicketCard: React.FC<OrderTicketCardProps> = ({ order, onUpdat
         {isAccepted && (
           <button
             onClick={() => onUpdateStatus(order._id, 'Preparing')}
-            className="flex-1 touch-target py-2.5 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow-sm transition-colors"
+            className="flex-1 min-w-0 touch-target py-2.5 px-3 bg-cafe-amber hover:bg-cafe-amber-hover text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow-sm transition-colors truncate"
           >
-            <ChefHat className="w-4 h-4" />
-            <span>Start Preparing</span>
+            <ChefHat className="w-4 h-4 shrink-0" />
+            <span className="truncate">Start Prep</span>
           </button>
         )}
 
         {isPreparing && (
           <button
             onClick={() => onUpdateStatus(order._id, 'Ready')}
-            className="flex-1 touch-target py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow-sm transition-colors"
+            className="flex-1 min-w-0 touch-target py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow-sm transition-colors truncate"
           >
-            <Check className="w-4 h-4" />
-            <span>Mark Ready</span>
+            <Check className="w-4 h-4 shrink-0" />
+            <span className="truncate">Mark Ready</span>
           </button>
         )}
 
         {isReady && (
           <button
             onClick={() => onUpdateStatus(order._id, 'Completed')}
-            className="flex-1 touch-target py-2.5 bg-cafe-deep hover:bg-cafe-espresso text-[#FFF4E6] font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow-sm transition-colors"
+            className="flex-1 min-w-0 touch-target py-2.5 px-3 bg-cafe-deep hover:bg-cafe-espresso text-[#FFF4E6] font-bold text-xs rounded-xl flex items-center justify-center space-x-1.5 shadow-sm transition-colors truncate"
           >
-            <CheckCheck className="w-4 h-4 text-cafe-amber" />
-            <span>Mark Completed</span>
+            <CheckCheck className="w-4 h-4 text-cafe-amber shrink-0" />
+            <span className="truncate">Complete</span>
           </button>
         )}
 
         <button
           onClick={() => onUpdateStatus(order._id, 'Cancelled')}
-          className="touch-target w-10 h-10 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:bg-[#4B3024]/15 hover:border-[#4B3024] flex items-center justify-center transition-colors"
+          className="touch-target w-10 h-10 shrink-0 rounded-xl border border-cafe-border text-cafe-muted hover:text-[#4B3024] hover:bg-[#4B3024]/15 hover:border-[#4B3024] flex items-center justify-center transition-colors"
           title="Cancel Order"
         >
           <X className="w-4 h-4" />
