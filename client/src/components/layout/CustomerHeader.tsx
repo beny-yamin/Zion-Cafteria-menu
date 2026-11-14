@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingBag, Coffee, Clock } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher.js';
+import { useAuth } from '../../context/AuthContext.js';
 
 interface CustomerHeaderProps {
   cafeName?: string;
@@ -17,6 +18,9 @@ export const CustomerHeader: React.FC<CustomerHeaderProps> = ({
   onOpenCart,
   avgPrepTime = 12,
 }) => {
+  const { user } = useAuth();
+  const hasTopNav = Boolean(user?.isDemo);
+
   return (
     <header className="sticky top-0 z-40 bg-cafe-card/95 backdrop-blur-md border-b border-cafe-border px-3 sm:px-4 py-2.5 sm:py-3 shadow-sm transition-colors">
       <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
@@ -39,7 +43,7 @@ export const CustomerHeader: React.FC<CustomerHeaderProps> = ({
         </div>
 
         <div className="flex items-center space-x-2 shrink-0">
-          <ThemeSwitcher compact={true} />
+          {!hasTopNav && <ThemeSwitcher compact={true} />}
           <button
             onClick={onOpenCart}
             aria-label="Cart"
