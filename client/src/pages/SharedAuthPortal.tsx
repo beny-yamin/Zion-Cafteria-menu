@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Coffee } from 'lucide-react';
+import { Coffee, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { RealAuthForm } from '../components/auth/RealAuthForm.js';
 import { DemoRoleShowcase } from '../components/auth/DemoRoleShowcase.js';
 import { ThemeSwitcher } from '../components/layout/ThemeSwitcher.js';
@@ -11,6 +11,7 @@ export const SharedAuthPortal: React.FC = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
+  const [showDemo, setShowDemo] = useState(false);
 
   useEffect(() => {
     if (user && !user.isDemo) {
@@ -42,7 +43,7 @@ export const SharedAuthPortal: React.FC = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="max-w-5xl w-full mx-auto space-y-4 pt-2">
+      <div className="max-w-2xl w-full mx-auto space-y-4 pt-2">
         <div className="flex justify-end">
           <ThemeSwitcher />
         </div>
@@ -53,27 +54,41 @@ export const SharedAuthPortal: React.FC = () => {
             <Coffee className="w-8 h-8" />
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#FFF4E6] tracking-tight drop-shadow-md">
-            Zion Cafeteria: Digital Menu & Ordering System
+            Zion Cafeteria
           </h1>
-          <p className="text-[#E8DCCB] text-sm sm:text-base font-serif italic tracking-wide max-w-xl mx-auto drop-shadow-sm">
+          <p className="text-[#E8DCCB] text-sm font-serif italic tracking-wide max-w-md mx-auto drop-shadow-sm">
             &ldquo;This is your home. Order what you like, it will be on the table.&rdquo;
           </p>
         </header>
 
-        {/* 2-Column Dark Glassmorphism Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          <div className="lg:col-span-5 w-full flex">
-            <RealAuthForm />
-          </div>
+        {/* Focused Authentication & Customer Access */}
+        <div className="max-w-md mx-auto w-full">
+          <RealAuthForm />
+        </div>
 
-          <div className="lg:col-span-7 bg-cafe-deep/60 backdrop-blur-md border border-cafe-border/20 rounded-3xl p-6 shadow-2xl w-full flex flex-col justify-between">
-            <DemoRoleShowcase />
-          </div>
+        {/* Bottom Demo Access Trigger */}
+        <div className="pt-4 flex flex-col items-center">
+          <button
+            type="button"
+            onClick={() => setShowDemo((prev) => !prev)}
+            className="touch-target inline-flex items-center space-x-2 text-xs font-bold text-[#C5B49F] hover:text-[#FFF4E6] bg-cafe-deep/80 hover:bg-cafe-espresso border border-cafe-border/30 px-4 py-2 rounded-full transition-colors shadow-sm"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-cafe-amber" />
+            <span>Demo</span>
+            {showDemo ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+
+          {/* Reveal 3 Demo Roles on Click */}
+          {showDemo && (
+            <div className="w-full mt-4 bg-cafe-deep/80 backdrop-blur-md border border-cafe-border/30 rounded-3xl p-5 shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <DemoRoleShowcase />
+            </div>
+          )}
         </div>
       </div>
 
       <footer className="text-center text-[11px] text-[#C5B49F] py-4 mt-6">
-        Zion Cafeteria • Full-Stack Hospitality Platform with Role-Based Security & Real-Time Live Ordering
+        Zion Cafeteria • Full-Stack Hospitality Platform
       </footer>
     </div>
   );
