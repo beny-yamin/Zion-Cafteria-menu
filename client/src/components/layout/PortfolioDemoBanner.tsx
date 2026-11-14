@@ -1,29 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ShieldCheck, LogOut, RefreshCw, Smartphone } from 'lucide-react';
+import { Sparkles, ShieldCheck, LogOut, Smartphone } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.js';
-import { UserRole } from '../../types/index.js';
 import { ThemeSwitcher } from './ThemeSwitcher.js';
 
 export const PortfolioDemoBanner: React.FC = () => {
-  const { user, demoLogin, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   if (!user || !user.isDemo) return null;
 
-  const handleRoleSwitch = async (targetRole: UserRole) => {
-    try {
-      const res = await demoLogin(targetRole);
-      if (res.role === 'Owner') navigate('/owner');
-      else navigate('/kitchen');
-    } catch (e) {
-      console.error('Demo switch error', e);
-    }
-  };
-
   const handleExitDemo = async () => {
     await logout();
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -46,24 +35,6 @@ export const PortfolioDemoBanner: React.FC = () => {
 
         <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 sm:pb-0 scrollbar-none">
           <ThemeSwitcher compact={true} />
-          {user.role !== 'Owner' && (
-            <button
-              onClick={() => handleRoleSwitch('Owner')}
-              className="touch-target px-2.5 py-1 rounded-lg bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white border border-cafe-border/30 text-[11px] font-bold flex items-center space-x-1 transition-colors shrink-0"
-            >
-              <RefreshCw className="w-3 h-3" />
-              <span>Owner</span>
-            </button>
-          )}
-          {user.role !== 'KitchenStaff' && (
-            <button
-              onClick={() => handleRoleSwitch('KitchenStaff')}
-              className="touch-target px-2.5 py-1 rounded-lg bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white border border-cafe-border/30 text-[11px] font-bold flex items-center space-x-1 transition-colors shrink-0"
-            >
-              <RefreshCw className="w-3 h-3" />
-              <span>Kitchen</span>
-            </button>
-          )}
           <button
             onClick={() => navigate('/menu?table=1')}
             className="touch-target px-2.5 py-1 rounded-lg bg-cafe-espresso hover:bg-cafe-amber text-[#FFF4E6] hover:text-white border border-cafe-border/30 text-[11px] font-bold flex items-center space-x-1 transition-colors shrink-0"

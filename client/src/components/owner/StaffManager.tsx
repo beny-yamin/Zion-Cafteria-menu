@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { UserPlus, KeyRound, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api.js';
 import { AdminUser, UserRole } from '../../types/index.js';
 import { CreateStaffModal } from './CreateStaffModal.js';
 
 export const StaffManager: React.FC = () => {
-  const navigate = useNavigate();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

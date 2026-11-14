@@ -13,9 +13,10 @@ export const DemoRoleShowcase: React.FC = () => {
     setLoadingRole(targetRole);
     try {
       await demoLogin(targetRole);
-      navigate(targetPath);
+      navigate(targetPath, { replace: true });
     } catch (err) {
       console.error('Demo launch error', err);
+      navigate(targetPath, { replace: true });
     } finally {
       setLoadingRole(null);
     }

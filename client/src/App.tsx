@@ -27,9 +27,19 @@ const RootRoute: React.FC = () => {
   }
 
   // Authenticated users go directly to their respective operational dashboards
-  if (user) {
-    if (user.role === 'Owner') return <Navigate to="/owner" replace />;
-    if (user.role === 'KitchenStaff') return <Navigate to="/kitchen" replace />;
+  let activeUser = user;
+  if (!activeUser && typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem('user');
+      if (saved) activeUser = JSON.parse(saved);
+    } catch {
+      activeUser = null;
+    }
+  }
+
+  if (activeUser) {
+    if (activeUser.role === 'Owner') return <Navigate to="/owner" replace />;
+    if (activeUser.role === 'KitchenStaff') return <Navigate to="/kitchen" replace />;
     return <Navigate to="/login" replace />;
   }
 

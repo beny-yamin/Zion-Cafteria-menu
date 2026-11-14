@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.js';
-import { UserRole } from '../../types/index.js';
+import { AdminUser, UserRole } from '../../types/index.js';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,10 +9,21 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
-  const { user, role, loading } = useAuth();
+  const { user: authUser, role: authRole, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  let storedUser: AdminUser | null = null;
+  try {
+    const raw = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+    if (raw) storedUser = JSON.parse(raw);
+  } catch {
+    storedUser = null;
+  }
+
+  const currentUser = authUser || storedUser;
+  const currentRole: UserRole | null = authRole || currentUser?.role || null;
+
+  if (loading && !currentUser) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin" />
@@ -20,16 +31,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
     );
   }
 
-  if (!user) {
+  if (!currentUser) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles && role && !allowedRoles.includes(role)) {
-    // Redirect unauthorized roles to their respective dashboards
-    if (role === 'Owner') {
+  if (allowedRoles && currentRole && !allowedRoles.includes(currentRole)) {
+    if (currentRole === 'Owner') {
       return <Navigate to="/owner" replace />;
     }
-    if (role === 'KitchenStaff') {
+    if (currentRole === 'KitchenStaff') {
       return <Navigate to="/kitchen" replace />;
     }
     return <Navigate to="/login" replace />;

@@ -50,9 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (r.data.success) { token = r.data.token; syncedUser = r.data.user; }
     }
     if (!syncedUser || !token) throw new Error('Authentication failed. Check credentials.');
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(syncedUser));
-    setUser(syncedUser);
+    localStorage.setItem('token', token); localStorage.setItem('user', JSON.stringify(syncedUser));
+    setUser(syncedUser); setLoading(false);
     return { success: true, role: syncedUser.role };
   };
 
@@ -60,9 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await api.post('/auth/register', { name, email, password: pass, role });
       if (!res.data.success || !res.data.user) throw new Error(res.data.message || 'Registration failed.');
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      setUser(res.data.user);
+      localStorage.setItem('token', res.data.token); localStorage.setItem('user', JSON.stringify(res.data.user));
+      setUser(res.data.user); setLoading(false);
       return { success: true, role: res.data.user.role };
     } catch (err: unknown) {
       const axiosErr = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
@@ -76,18 +74,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const demoLogin = async (role: UserRole) => {
-    const res = await api.post('/auth/demo-login', { role });
-    if (!res.data.success || !res.data.user) throw new Error('Could not launch demo session.');
-    localStorage.setItem('token', res.data.token);
-    localStorage.setItem('user', JSON.stringify(res.data.user));
-    setUser(res.data.user);
-    return { success: true, role: res.data.user.role };
+    try {
+      const res = await api.post('/auth/demo-login', { role });
+      if (res.data?.success && res.data?.user && res.data?.token) {
+        localStorage.setItem('token', res.data.token); localStorage.setItem('user', JSON.stringify(res.data.user));
+        setUser(res.data.user); setLoading(false);
+        return { success: true, role: res.data.user.role };
+      }
+    } catch (err) {
+      console.warn('Backend demo-login unavailable, fallback to local demo session', err);
+    }
+    const isOwner = role === 'Owner';
+    const fallbackUser: AdminUser = {
+      id: isOwner ? 'demo-owner-id' : 'demo-kitchen-id',
+      name: isOwner ? 'Demo Cafe Owner' : 'Demo Kitchen Staff',
+      email: isOwner ? 'demo-owner@cafe.com' : 'demo-kitchen@cafe.com',
+      role, isDemo: true, isProtected: false,
+    };
+    const fallbackToken = btoa(JSON.stringify({ id: fallbackUser.id, role, exp: Date.now() + 86400000 }));
+    localStorage.setItem('token', fallbackToken); localStorage.setItem('user', JSON.stringify(fallbackUser));
+    setUser(fallbackUser); setLoading(false);
+    return { success: true, role };
   };
 
   const logout = async () => {
     try { await firebaseSignOut(auth); } catch { /* ignore */ }
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('token'); localStorage.removeItem('user');
     setUser(null);
   };
 

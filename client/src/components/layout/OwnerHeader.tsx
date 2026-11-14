@@ -1,12 +1,11 @@
 import React from 'react';
-import { LayoutDashboard, QrCode, Users, Plus, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { LayoutDashboard, ChefHat, QrCode, Users, Plus, LogOut } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher.js';
 import { useAuth } from '../../context/AuthContext.js';
 
 interface OwnerHeaderProps {
-  activeTab: 'analytics' | 'tables' | 'staff';
-  setActiveTab: (tab: 'analytics' | 'tables' | 'staff') => void;
+  activeTab: 'analytics' | 'kitchen' | 'tables' | 'staff';
+  setActiveTab: (tab: 'analytics' | 'kitchen' | 'tables' | 'staff') => void;
   onOpenNewItem: () => void;
   onExit: () => void;
 }
@@ -17,7 +16,6 @@ export const OwnerHeader: React.FC<OwnerHeaderProps> = ({
   onOpenNewItem,
   onExit,
 }) => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const hasTopNav = Boolean(user?.isDemo);
 
@@ -39,6 +37,17 @@ export const OwnerHeader: React.FC<OwnerHeaderProps> = ({
             >
               <LayoutDashboard className="w-3.5 h-3.5" />
               <span>Analytics</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('kitchen')}
+              className={`touch-target px-2.5 sm:px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-1 whitespace-nowrap shrink-0 transition-colors ${
+                activeTab === 'kitchen'
+                  ? 'bg-cafe-amber text-white shadow-sm'
+                  : 'text-cafe-muted hover:bg-cafe-cream hover:text-cafe-text'
+              }`}
+            >
+              <ChefHat className="w-3.5 h-3.5" />
+              <span>Kitchen</span>
             </button>
             <button
               onClick={() => setActiveTab('tables')}

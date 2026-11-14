@@ -7,6 +7,7 @@ import { KpiCard } from '../components/cards/KpiCard.js';
 import { SalesChart } from '../components/analytics/SalesChart.js';
 import { TableQrManager } from '../components/tables/TableQrManager.js';
 import { StaffManager } from '../components/owner/StaffManager.js';
+import { KitchenStatusMonitor } from '../components/owner/KitchenStatusMonitor.js';
 import { MenuManagerModal } from '../components/forms/MenuManagerModal.js';
 import { OwnerHeader } from '../components/layout/OwnerHeader.js';
 import { useAuth } from '../context/AuthContext.js';
@@ -14,7 +15,7 @@ import { useAuth } from '../context/AuthContext.js';
 export const OwnerDashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'tables' | 'staff'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'kitchen' | 'tables' | 'staff'>('analytics');
   const [range, setRange] = useState<'today' | 'week' | 'month'>('today');
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [tables, setTables] = useState<Table[]>([]);
@@ -84,6 +85,7 @@ export const OwnerDashboardPage: React.FC = () => {
             </div>
           </>
         )}
+        {activeTab === 'kitchen' && <KitchenStatusMonitor />}
         {activeTab === 'tables' && <TableQrManager tables={tables} onTablesUpdated={fetchTables} />}
         {activeTab === 'staff' && <StaffManager />}
       </main>

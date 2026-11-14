@@ -11,7 +11,7 @@ import { requireAuth, requireRole } from '../middleware/auth.js';
 const router = Router();
 
 // 1. Specific static sub-paths first
-router.get('/active', requireAuth, requireRole(['KitchenStaff']), getActiveOrders);
+router.get('/active', requireAuth, requireRole(['Owner', 'KitchenStaff']), getActiveOrders);
 router.get('/table/:tableNumber', getOrdersByTable);
 
 // 2. Generic parameterized sub-path after
